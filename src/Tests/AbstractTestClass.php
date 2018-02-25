@@ -54,6 +54,35 @@ abstract class AbstractTestClass extends TestCase
     }
 
     /**
+     * Create property reflection
+     *
+     * Return a reflection property, according to the instance class name and property. Abble to follow the
+     * inheritance tree to find the property.
+     *
+     * @param string $instanceClassName The base instance class name
+     * @param string $property          The property name to find
+     *
+     * @return \ReflectionProperty|NULL
+     */
+    protected function createPropertyReflection(string $instanceClassName, string $property) : ?\ReflectionProperty
+    {
+        $reflectionClass = new \ReflectionClass($instanceClassName);
+
+        if ($reflectionClass->hasProperty($property)) {
+            $propertyReflection = $reflectionClass->getProperty($property);
+            $propertyReflection->setAccessible(true);
+            return $propertyReflection;
+        }
+
+        $parentClass = $reflectionClass->getParentClass();
+        if (!$parentClass) {
+            return null;
+        }
+
+        return $this->createPropertyReflection($parentClass->getName(), $property);
+    }
+
+    /**
      * Get class property
      *
      * Return an instance of ReflectionProperty for a given property name
@@ -65,15 +94,17 @@ abstract class AbstractTestClass extends TestCase
      */
     protected function getClassProperty(string $property, bool $accessible = true)
     {
-        $this->assertTrue(
-            $this->classReflection->hasProperty($property),
-            sprintf(
-                'The class "%s" is expected to store the property "%s"',
-                $this->getTestedClass(),
-                $property
-            )
-        );
-        $property = $this->classReflection->getProperty($property);
+        $property = $this->createPropertyReflection($this->classReflection->getName(), $property);
+
+        if (!$property) {
+            $this->fail(
+                sprintf(
+                    'The class "%s" is expected to store the property "%s"',
+                    $this->getTestedClass(),
+                    $property
+                )
+            );
+        }
         $property->setAccessible($accessible);
 
         return $property;
@@ -104,12 +135,32 @@ abstract class AbstractTestClass extends TestCase
      */
     protected function assertIsSimpleGetter(string $property, string $method, $value) : void
     {
+        $this->assertIsGetter($property, $method, $value, $value);
+
+        return;
+    }
+
+    /**
+     * Assert is getter
+     *
+     * Validate the given method is a getter method and return the given expected value from the given property when
+     * the given value is injected into the property
+     *
+     * @param string $property The property name
+     * @param string $method   The getter method
+     * @param mixed  $value    The injected value
+     * @param mixed  $expected The returned value
+     *
+     * @return void
+     */
+    protected function assertIsGetter(string $property, string $method, $value, $expected) : void
+    {
         $propertyReflex = $this->getClassProperty($property);
 
         $instance = $this->getInstance();
         $propertyReflex->setValue($instance, $value);
 
-        $this->assertEquals($value, $instance->{$method}());
+        $this->assertEquals($expected, $instance->{$method}());
 
         return;
     }
