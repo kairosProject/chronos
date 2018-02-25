@@ -6,6 +6,8 @@
         "ext-iconv": "*",
         "alcaeus/mongo-php-adapter": "^1.1",
         "doctrine/mongodb-odm-bundle": "^3.4",
+        "predis/predis": "^1.1",
+        "snc/redis-bundle": "^2.0",
         "symfony/console": "^4.0",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^4.0",
