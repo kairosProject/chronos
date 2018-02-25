@@ -61,6 +61,18 @@ class RoleTest extends AbstractTestClass
     }
 
     /**
+     * Test setLabel
+     *
+     * Validate the App\Document\Role::setLabel method
+     *
+     * @return void
+     */
+    public function testSetLabel() : void
+    {
+        $this->assertIsSimpleSetter('label', 'setLabel', 'thisIsMyLabel');
+    }
+
+    /**
      * Get tested class
      *
      * Return the tested class name

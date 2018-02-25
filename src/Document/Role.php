@@ -77,4 +77,20 @@ class Role
     {
         return $this->label;
     }
+
+    /**
+     * Set label
+     *
+     * Set the current role label
+     *
+     * @param string $label The new label
+     *
+     * @return $this
+     */
+    public function setLabel($label) : Role
+    {
+        $this->label = $label;
+
+        return $this;
+    }
 }

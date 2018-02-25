@@ -199,4 +199,104 @@ abstract class User implements UserInterface
     {
         return $this->username;
     }
+
+    /**
+     * Set username
+     *
+     * Set the current user username
+     *
+     * @param string $username The new username
+     *
+     * @return $this
+     */
+    public function setUsername($username) : User
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Set password
+     *
+     * Set the current user password
+     *
+     * @param string $password The new password
+     *
+     * @return $this
+     */
+    public function setPassword($password) : User
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Set salt
+     *
+     * Set the current user salt
+     *
+     * @param string $salt The new salt
+     *
+     * @return $this
+     */
+    public function setSalt($salt) : User
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * Set roles
+     *
+     * Set the current user roles
+     *
+     * @param ArrayCollection $roles The new ArrayCollection of roles
+     *
+     * @return $this
+     */
+    public function setRoles(ArrayCollection $roles) : User
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Add role
+     *
+     * Add a new role to the collection
+     *
+     * @param Role $role The new role
+     *
+     * @return User
+     */
+    public function addRole(Role $role) : User
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove role
+     *
+     * Remove a role from the collection
+     *
+     * @param Role $role The role to remove
+     *
+     * @return User
+     */
+    public function removeRole(Role $role) : User
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
+        }
+
+        return $this;
+    }
 }

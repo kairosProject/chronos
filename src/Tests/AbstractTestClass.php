@@ -123,6 +123,50 @@ abstract class AbstractTestClass extends TestCase
     }
 
     /**
+     * Assert is simple setter
+     *
+     * Validate the given method is a simple setter method. Assert the returned value of the method is the instance,
+     * and the value is injected into the property.
+     *
+     * @param string $property The property name
+     * @param string $method   The getter method
+     * @param mixed  $value    The injected value
+     *
+     * @return void
+     */
+    protected function assertIsSimpleSetter(string $property, string $method, $value) : void
+    {
+        $this->assertIsSetter($property, $method, $value, $value);
+
+        return;
+    }
+
+    /**
+     * Assert is setter
+     *
+     * Validate the given method is a setter method. Assert the returned value of the method is the instance,
+     * and the value is injected into the property. Allow the injected value to be modifyed during process.
+     *
+     * @param string $property The property name
+     * @param string $method   The getter method
+     * @param mixed  $value    The injected value
+     * @param mixed  $expected The final injected value
+     *
+     * @return void
+     */
+    protected function assertIsSetter(string $property, string $method, $value, $expected) : void
+    {
+        $propertyReflex = $this->getClassProperty($property);
+        $instance = $this->getInstance();
+
+        $this->assertSame($instance, $instance->{$method}($value));
+        $this->assertEquals($expected, $propertyReflex->getValue($instance));
+
+
+        return;
+    }
+
+    /**
      * Assert is simple getter
      *
      * Validate the given method is a simple getter method and return the given value from the given property

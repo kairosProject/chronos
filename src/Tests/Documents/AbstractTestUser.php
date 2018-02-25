@@ -67,43 +67,49 @@ abstract class AbstractTestUser extends AbstractTestClass
     }
 
     /**
-     * Test getUsername
+     * Test username
      *
      * Validate the App\Document\User::getUsername method
+     * Validate the App\Document\User::setUsername method
      *
      * @return void
      */
-    public function testGetUsername() : void
+    public function testUsername() : void
     {
         $this->assertIsSimpleGetter('username', 'getUsername', 'ThisIsMyUserName');
+        $this->assertIsSimpleSetter('username', 'setUsername', 'MyUsername');
 
         return;
     }
 
     /**
-     * Test getPassword
+     * Test password
      *
      * Validate the App\Document\User::getPassword method
+     * Validate the App\Document\User::setPassword method
      *
      * @return void
      */
-    public function testGetPassword() : void
+    public function testPassword() : void
     {
         $this->assertIsSimpleGetter('password', 'getPassword', 'ThisIsMyPassword');
+        $this->assertIsSimpleSetter('password', 'setPassword', 'MyPassword');
 
         return;
     }
 
     /**
-     * Test getSalt
+     * Test salt
      *
      * Validate the App\Document\User::getSalt method
+     * Validate the App\Document\User::setSalt method
      *
      * @return void
      */
-    public function testGetSalt() : void
+    public function testSalt() : void
     {
         $this->assertIsSimpleGetter('salt', 'getSalt', 'ThisIsMySalt');
+        $this->assertIsSimpleSetter('salt', 'setSalt', 'MySalt');
 
         return;
     }
@@ -129,9 +135,10 @@ abstract class AbstractTestUser extends AbstractTestClass
     }
 
     /**
-     * Test getRoles
+     * Test roles
      *
      * Validate the App\Document\User::getRoles method
+     * Validate the App\Document\User::setRoles method
      *
      * @param ArrayCollection $roles    The roles to inject into the user
      * @param array           $expected The expected result
@@ -139,9 +146,12 @@ abstract class AbstractTestUser extends AbstractTestClass
      * @return       void
      * @dataProvider roleProvider
      */
-    public function testGetRoles(ArrayCollection $roles, array $expected) : void
+    public function testRoles(ArrayCollection $roles, array $expected) : void
     {
         $this->assertIsGetter('roles', 'getRoles', $roles, $expected);
+        $this->assertIsSimpleSetter('roles', 'setRoles', $roles);
+
+        return;
     }
 
     /**
@@ -167,5 +177,51 @@ abstract class AbstractTestUser extends AbstractTestClass
         $this->assertNull($salt->getValue($instance));
 
         return;
+    }
+
+    /**
+     * Test addRole
+     *
+     * Validate the App\Document\User::addRole method
+     *
+     * @return void
+     */
+    public function testAddRole() : void
+    {
+        $instance = $this->getInstance();
+        $roleProperty = $this->getClassProperty('roles');
+
+        $roleProperty->setValue($instance, new ArrayCollection());
+        $role = $this->createMock(Role::class);
+
+        $this->assertSame($instance, $instance->addRole($role));
+
+        $roles = $roleProperty->getValue($instance)->toArray();
+        $this->assertSame([$role], $roles);
+
+        $this->assertSame($instance, $instance->addRole($role));
+        $this->assertSame([$role], $roles);
+    }
+
+    /**
+     * Test removeRole
+     *
+     * Validate the App\Document\User::removeRole method
+     *
+     * @return void
+     */
+    public function testRemoveRole() : void
+    {
+        $instance = $this->getInstance();
+        $roleProperty = $this->getClassProperty('roles');
+
+        $role = $this->createMock(Role::class);
+        $roleProperty->setValue($instance, new ArrayCollection([$role]));
+
+        for ($iteration = 0; $iteration < 2; $iteration++) {
+            $this->assertSame($instance, $instance->removeRole($role));
+            $roles = $roleProperty->getValue($instance)->toArray();
+            $this->assertSame([], $roles);
+        }
     }
 }
