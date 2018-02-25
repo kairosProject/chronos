@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of the chronos project.
  *
@@ -48,7 +49,7 @@ class Role
      *
      * The role label
      *
-     * @var string
+     * @var                  string
      * @Field(type="string")
      */
     private $label;
@@ -77,4 +78,3 @@ class Role
         return $this->label;
     }
 }
-

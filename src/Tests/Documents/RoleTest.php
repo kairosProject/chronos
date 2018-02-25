@@ -1,9 +1,74 @@
 <?php
+declare(strict_types=1);
+/**
+ * This file is part of the chronos project.
+ *
+ * As each files provides by the CSCFA, this file is licensed
+ * under the MIT license.
+ *
+ * PHP version 5.6
+ *
+ * @category Test
+ * @package  Chronos
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
+ */
 namespace App\Tests\Documents;
 
-use PHPUnit\Framework\TestCase;
+use App\Document\Role;
+use App\Tests\AbstractTestClass;
 
-class RoleTest extends TestCase
+/**
+ * Role test
+ *
+ * This class is used to validate the Role implementation.
+ *
+ * @category Test
+ * @package  Chronos
+ * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     http://cscfa.fr
+ */
+class RoleTest extends AbstractTestClass
 {
-}
+    /**
+     * Test getId
+     *
+     * Validate the App\Document\Role::getId method
+     *
+     * @return void
+     */
+    public function testGetId() : void
+    {
+        $this->assertIsSimpleGetter('id', 'getId', 'thisIsMyId');
 
+        return;
+    }
+
+    /**
+     * Test getLabel
+     *
+     * Validate the App\Document\Role::getLabel method
+     *
+     * @return void
+     */
+    public function testGetLabel() : void
+    {
+        $this->assertIsSimpleGetter('label', 'getLabel', 'thisIsMyLabel');
+
+        return;
+    }
+
+    /**
+     * Get tested class
+     *
+     * Return the tested class name
+     *
+     * @return string
+     */
+    protected function getTestedClass(): string
+    {
+        return Role::class;
+    }
+}

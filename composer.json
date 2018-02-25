@@ -1,4 +1,6 @@
 {
+	"name": "kairos/chronos",
+	"description": "The Kairos project API",
     "type": "project",
     "license": "proprietary",
     "require": {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of the chronos project.
  *
@@ -30,11 +31,11 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\ReferenceMany;
  *
  * This class is used as parent for the user instances of the application. It implement the base UserInterface.
  *
- * @category Document
- * @package  Chronos
- * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
- * @license  MIT <https://opensource.org/licenses/MIT>
- * @link     http://cscfa.fr
+ * @category                                                   Document
+ * @package                                                    Chronos
+ * @author                                                     matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license                                                    MIT <https://opensource.org/licenses/MIT>
+ * @link                                                       http://cscfa.fr
  * @MappedSuperclass()
  * @InheritanceType("SINGLE_COLLECTION")
  * @DiscriminatorField("userType")
@@ -47,7 +48,7 @@ abstract class User implements UserInterface
      *
      * The current user id
      *
-     * @var string
+     * @var  string
      * @Id()
      */
     private $id;
@@ -57,7 +58,7 @@ abstract class User implements UserInterface
      *
      * The user name of the current user
      *
-     * @var string
+     * @var                  string
      * @Field(type="string")
      */
     private $username;
@@ -67,7 +68,7 @@ abstract class User implements UserInterface
      *
      * The password of the current user
      *
-     * @var string
+     * @var                  string
      * @Field(type="string")
      */
     private $password;
@@ -77,7 +78,7 @@ abstract class User implements UserInterface
      *
      * The password salt for the current user
      *
-     * @var string
+     * @var                  string
      * @Field(type="string")
      */
     private $salt;
@@ -87,7 +88,7 @@ abstract class User implements UserInterface
      *
      * The set of available roles for the current user
      *
-     * @var ArrayCollection
+     * @var                                               ArrayCollection
      * @ReferenceMany(targetDocument="App\Document\Role")
      */
     private $roles;
@@ -123,7 +124,7 @@ abstract class User implements UserInterface
      * password will be salted, encoded, and then compared to this value.
      *
      * @return string|null The password
-     * @see UserInterface::getPassword()
+     * @see    UserInterface::getPassword()
      */
     public function getPassword() : ?string
     {
@@ -137,7 +138,7 @@ abstract class User implements UserInterface
      * the plain-text password is stored on this object.
      *
      * @return $this
-     * @see UserInterface::eraseCredentials()
+     * @see    UserInterface::eraseCredentials()
      */
     public function eraseCredentials() : User
     {
@@ -153,7 +154,7 @@ abstract class User implements UserInterface
      * This can return null if the password was not encoded using a salt.
      *
      * @return string|null The salt
-     * @see \Symfony\Component\Security\Core\User\UserInterface::getSalt()
+     * @see    \Symfony\Component\Security\Core\User\UserInterface::getSalt()
      */
     public function getSalt() : ?string
     {
@@ -175,15 +176,12 @@ abstract class User implements UserInterface
      * is created.
      *
      * @return (Role|string)[] The user roles
-     * @see \Symfony\Component\Security\Core\User\UserInterface::getRoles()
+     * @see    \Symfony\Component\Security\Core\User\UserInterface::getRoles()
      */
     public function getRoles() : array
     {
         $roles = [];
 
-        /**
-         * @var Role $role
-         */
         foreach ($this->roles as $role) {
             $roles[] = $role->getLabel();
         }
@@ -195,11 +193,10 @@ abstract class User implements UserInterface
      * Returns the username used to authenticate the user.
      *
      * @return string|null The username
-     * @see UserInterface::getUsername()
+     * @see    UserInterface::getUsername()
      */
     public function getUsername() : ?string
     {
         return $this->username;
     }
 }
-

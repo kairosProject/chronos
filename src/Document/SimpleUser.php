@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of the chronos project.
  *
@@ -32,4 +33,3 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
 class SimpleUser extends User
 {
 }
-
