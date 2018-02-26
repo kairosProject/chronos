@@ -40,9 +40,9 @@ class Role
      *
      * The role Id
      *
-     * @var string
+     * @var              string
      * @Id
-     * @Groups({"safe"})
+     * @Groups({"role.id"})
      */
     private $id;
 
@@ -53,7 +53,7 @@ class Role
      *
      * @var                  string
      * @Field(type="string")
-     * @Groups({"safe"})
+     * @Groups({"role.label"})
      */
     private $label;
 

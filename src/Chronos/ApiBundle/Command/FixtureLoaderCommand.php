@@ -71,9 +71,9 @@ class FixtureLoaderCommand extends Command
      *
      * The default FixtureLoaderCommand construct
      *
-     * @param ObjectManager $manager The application object manager
-     * @param FileLocator $fileLoactor The application file locator
-     * @param array       $bundles      The application bundle list
+     * @param ObjectManager $manager     The application object manager
+     * @param FileLocator   $fileLoactor The application file locator
+     * @param array         $bundles     The application bundle list
      *
      * @return void
      */
@@ -144,4 +144,3 @@ class FixtureLoaderCommand extends Command
         }
     }
 }
-

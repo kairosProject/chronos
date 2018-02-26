@@ -45,4 +45,3 @@ class RoleFixtureLoader extends AbstractFixture
     {
     }
 }
-

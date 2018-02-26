@@ -56,9 +56,9 @@ abstract class User implements UserInterface
      *
      * The current user id
      *
-     * @var  string
+     * @var              string
      * @Id()
-     * @Groups({"safe"})
+     * @Groups({"user.id"})
      */
     private $id;
 
@@ -69,7 +69,7 @@ abstract class User implements UserInterface
      *
      * @var                  string
      * @Field(type="string")
-     * @Groups({"safe"})
+     * @Groups({"user.username"})
      */
     private $username;
 
@@ -80,6 +80,7 @@ abstract class User implements UserInterface
      *
      * @var                  string
      * @Field(type="string")
+     * @Groups({"user.password"})
      */
     private $password;
 
@@ -90,6 +91,7 @@ abstract class User implements UserInterface
      *
      * @var                  string
      * @Field(type="string")
+     * @Groups({"user.salt"})
      */
     private $salt;
 
@@ -100,7 +102,7 @@ abstract class User implements UserInterface
      *
      * @var                                                              ArrayCollection
      * @ReferenceMany(targetDocument="Chronos\RoleBundle\Document\Role")
-     * @Groups({"safe"})
+     * @Groups({"user.roles"})
      */
     private $roles;
 

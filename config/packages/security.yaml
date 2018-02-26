@@ -1,5 +1,8 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    encoders:
+        Chronos\UserBundle\Document\User:
+            algorithm: argon2i
     providers:
         in_memory: { memory: ~ }
     firewalls:

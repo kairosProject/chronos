@@ -30,4 +30,3 @@ namespace Chronos\ApiBundle\Formatter;
 interface EventDataFormatterInterface
 {
 }
-

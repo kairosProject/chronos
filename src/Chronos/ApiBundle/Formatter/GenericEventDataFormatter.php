@@ -105,11 +105,11 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
      *
      * The default GenericEventDataFormater constructor
      *
-     * @param Serializer $serializer The serializer to process the formating process
-     * @param string $format The serialization destination format
+     * @param Serializer               $serializer      The serializer to process the formating process
+     * @param string                   $format          The serialization destination format
      * @param ResponseFactoryInterface $responseFactory The ResponseFactory relevant for the serializing format
-     * @param array $baseContext The base response factory context
-     * @param string $sourceKey The source key where the data to format are located into the parameters
+     * @param array                    $baseContext     The base response factory context
+     * @param string                   $sourceKey       The source key where the data to format are located into the parameters
      *
      * @return void
      */
@@ -139,7 +139,7 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
      * Format
      *
      * @param ControllerEventInterface $event
-     * @param string $eventName
+     * @param string                   $eventName
      * @param EventDispatcherInterface $dispatcher
      */
     public function format(
@@ -168,4 +168,3 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
         return;
     }
 }
-

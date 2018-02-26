@@ -42,4 +42,3 @@ interface ResponseFactoryInterface
      */
     public function createResponse(array $context) : Response;
 }
-

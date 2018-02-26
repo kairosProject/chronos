@@ -23,7 +23,7 @@ services:
             - "@api.response_factory.json"
             - "@logger"
             - {isJson: true}
-            - {groups: ['safe']}
+            - {groups: ['user.id', 'user.username', 'user.roles', 'role.id']}
     UserDispatcher:
         class: Symfony\Component\EventDispatcher\EventDispatcher
         calls:

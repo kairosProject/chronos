@@ -92,8 +92,8 @@ class GenericDocumentProvider implements DocumentProviderInterface
      * Provide the documents relative to the providing process
      *
      * @param ControllerEventInterface $event      The current dispatched event
-     * @param string                      $eventName  The current event name
-     * @param EventDispatcherInterface    $dispatcher The calling dispatcher
+     * @param string                   $eventName  The current event name
+     * @param EventDispatcherInterface $dispatcher The calling dispatcher
      *
      * @return void
      */

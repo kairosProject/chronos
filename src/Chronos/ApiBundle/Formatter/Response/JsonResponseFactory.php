@@ -114,4 +114,3 @@ class JsonResponseFactory implements ResponseFactoryInterface
         return;
     }
 }
-

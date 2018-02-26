@@ -62,21 +62,29 @@ class SimpleUserController implements ApiControllerEventInterface
     }
 
     /**
-     * Get multiple action
+     * Get the set of SimpleUsers
      *
-     * Return a json formated list of User
+     * Return a json formated list of User with role ids
      *
      * @param Request $request The original request
      *
-     * @SWG\Response(
-     *     response=200,
-     *     description="Returns the existing users",
-     *     @SWG\Schema(
-     *         type="array",
-     *         @Model(type=Chronos\UserBundle\Document\SimpleUser::class, groups={"safe"})
-     *     )
+     * @SWG\Get(
+     *  summary="Get SimpleUser list",
+     *  description="Return the list of existing users with role ids",
+     *  produces={"application/json"},
+     *  @SWG\Response(
+     *      response=200,
+     *      description="Returns the set of existing users",
+     *      @SWG\Schema(
+     *          type="array",
+     *          @Model(
+     *               type=Chronos\UserBundle\Document\SimpleUser::class,
+     *               groups={"user.id", "user.username", "user.roles", "role.id"}
+     *          )
+     *      )
+     *  )
      * )
-     * @return Response
+     * @return                                                    Response
      */
     public function getBulkAction(Request $request)
     {
