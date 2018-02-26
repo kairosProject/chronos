@@ -5,10 +5,32 @@ services:
         autoconfigure: false
         public: false
 
+    command.fixture.loader:
+        class: Chronos\ApiBundle\Command\FixtureLoaderCommand
+        arguments:
+            - '@doctrine_mongodb.odm.document_manager'
+            - '@file_locator'
+            - '%kernel.bundles%'
+        tags:
+            - { name: 'console.command', command: 'app:fixture:load' }
+        
+    
+    api.serializer.annotation.reader:
+        class: Doctrine\Common\Annotations\AnnotationReader
+    api.serializer.annotation.loader:
+        class: Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader
+        arguments:
+            - "@api.serializer.annotation.reader"
+    api.serializer.metadata.factory:
+        class: Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory
+        arguments:
+            - "@api.serializer.annotation.loader"
     api.serializer.json.encoder:
         class: Symfony\Component\Serializer\Encoder\JsonEncoder
     api.serializer.object.normalizer:
         class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+        arguments:
+            - "@api.serializer.metadata.factory"
     api.serializer:
         class: Symfony\Component\Serializer\Serializer
         arguments:

@@ -83,6 +83,15 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
     private $baseContext;
 
     /**
+     * Serializer context
+     *
+     * The object serializer context
+     *
+     * @var array
+     */
+    private $serializerContext;
+
+    /**
      * Logger
      *
      * The application logger
@@ -110,6 +119,7 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
         ResponseFactoryInterface $responseFactory,
         LoggerInterface $logger,
         array $baseContext = [],
+        array $serializerContext = [],
         string $sourceKey = DocumentProviderInterface::DATA_PROVIDED
     ) {
         if ($logger instanceof Logger) {
@@ -122,6 +132,7 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
         $this->responseFactory = $responseFactory;
         $this->baseContext = $baseContext;
         $this->logger = $logger;
+        $this->serializerContext = $serializerContext;
     }
 
     /**
@@ -139,8 +150,14 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
         $this->logger->debug('Get elements to serialize', ['source' => $this->sourceKey]);
         $data = $event->getParameters()->get($this->sourceKey);
 
-        $this->logger->debug('Serializing elements', ['format' => $this->format]);
-        $formattedValue = $this->serializer->serialize($data, $this->format);
+        $this->logger->debug(
+            'Serializing elements',
+            [
+                'format' => $this->format,
+                'serializer_context' => $this->serializerContext
+            ]
+        );
+        $formattedValue = $this->serializer->serialize($data, $this->format, $this->serializerContext);
 
         $context = array_replace($this->baseContext, ['data' => $formattedValue]);
         $this->logger->debug('Generating response', ['context' => $context]);

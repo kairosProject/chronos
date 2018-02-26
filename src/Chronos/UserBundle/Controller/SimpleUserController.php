@@ -73,7 +73,7 @@ class SimpleUserController implements ApiControllerEventInterface
      *     description="Returns the existing users",
      *     @SWG\Schema(
      *         type="array",
-     *         @Model(type=Chronos\UserBundle\Document\SimpleUser::class, groups={"full"})
+     *         @Model(type=Chronos\UserBundle\Document\SimpleUser::class, groups={"safe"})
      *     )
      * )
      * @return Response

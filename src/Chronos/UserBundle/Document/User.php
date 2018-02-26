@@ -26,6 +26,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\ReferenceMany;
 use Chronos\RoleBundle\Document\Role;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * User
@@ -57,6 +58,7 @@ abstract class User implements UserInterface
      *
      * @var  string
      * @Id()
+     * @Groups({"safe"})
      */
     private $id;
 
@@ -67,6 +69,7 @@ abstract class User implements UserInterface
      *
      * @var                  string
      * @Field(type="string")
+     * @Groups({"safe"})
      */
     private $username;
 
@@ -97,6 +100,7 @@ abstract class User implements UserInterface
      *
      * @var                                                              ArrayCollection
      * @ReferenceMany(targetDocument="Chronos\RoleBundle\Document\Role")
+     * @Groups({"safe"})
      */
     private $roles;
 

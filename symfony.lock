@@ -23,6 +23,9 @@
     "doctrine/common": {
         "version": "v2.8.1"
     },
+    "doctrine/data-fixtures": {
+        "version": "v1.3.0"
+    },
     "doctrine/inflector": {
         "version": "v1.3.0"
     },

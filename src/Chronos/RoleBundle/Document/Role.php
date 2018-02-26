@@ -19,6 +19,7 @@ namespace Chronos\RoleBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Role
@@ -41,6 +42,7 @@ class Role
      *
      * @var string
      * @Id
+     * @Groups({"safe"})
      */
     private $id;
 
@@ -51,6 +53,7 @@ class Role
      *
      * @var                  string
      * @Field(type="string")
+     * @Groups({"safe"})
      */
     private $label;
 
