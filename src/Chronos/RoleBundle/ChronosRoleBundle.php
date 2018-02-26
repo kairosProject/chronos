@@ -8,28 +8,27 @@ declare(strict_types=1);
  *
  * PHP version 5.6
  *
- * @category Document
+ * @category Bundle
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Document;
+namespace Chronos\RoleBundle;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Simple user
+ * Chronos role bundle
  *
- * This class is used to store and manage the simple users of the application.
+ * This class is used to configure the ChronosRoleBundle
  *
- * @category Document
+ * @category Bundle
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
- * @Document
  */
-class SimpleUser extends User
+class ChronosRoleBundle extends Bundle
 {
 }

@@ -8,28 +8,33 @@ declare(strict_types=1);
  *
  * PHP version 5.6
  *
- * @category Document
+ * @category Provider
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Document;
-
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
+namespace Chronos\ApiBundle\Provider;
 
 /**
- * Administrator
+ * Document provider interface
  *
- * This class is used to store and manage the administrators of the application.
+ * This interface define the main document provider methods
  *
- * @category Document
+ * @category Provider
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
- * @Document
  */
-class Administrator extends User
+interface DocumentProviderInterface
 {
+    /**
+     * On data provided
+     *
+     * This constant define the event throwed in case of data fully provided
+     *
+     * @var string
+     */
+    const ON_DATA_PROVIDED = 'data_provided';
 }

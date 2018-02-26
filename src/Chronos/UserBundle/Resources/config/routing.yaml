@@ -1,0 +1,4 @@
+user_controller:
+    path: /
+    controller: UserController:getBulkAction
+    methods: ['GET']

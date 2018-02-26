@@ -1,3 +1,3 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+user_routing:
+    resource: "@ChronosUserBundle/Resources/config/routing.yaml"
+    prefix: "/user"

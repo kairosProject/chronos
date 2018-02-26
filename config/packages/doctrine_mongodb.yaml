@@ -10,9 +10,13 @@ doctrine_mongodb:
         default:
             auto_mapping: true
             mappings:
-                App:
-                    is_bundle: false
+                ChronosUserBundle:
+                    is_bundle: true
                     type: annotation
-                    dir: '%kernel.project_dir%/src/Document'
-                    prefix: App\Document\
-                    alias: App
+                    prefix: Chronos\UserBundle\Document\
+                    alias: ChronosUserBundle
+                ChronosRoleBundle:
+                    is_bundle: true
+                    type: annotation
+                    prefix: Chronos\RoleBundle\Document\
+                    alias: ChronosRoleBundle

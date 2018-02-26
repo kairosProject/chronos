@@ -14,16 +14,17 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Tests\Documents;
+namespace Chronos\UserBundle\Tests\Documents;
 
-use App\Tests\AbstractTestClass;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Document\Role;
+use Chronos\RoleBundle\Document\Role;
+use Chronos\ApiBundle\Tests\AbstractTestClass;
 
 /**
  * User
  *
- * This class is used as parent for the user instances of the application. It implement the base UserInterface.
+ * This class is used as parent for the user instances of the Chronos\UserBundlelication.
+ * It implement the base UserInterface.
  *
  * @category Test
  * @package  Chronos
@@ -36,7 +37,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test __construct
      *
-     * Validate the App\Document\User::__construct method
+     * Validate the Chronos\UserBundle\Document\User::__construct method
      *
      * @return void
      */
@@ -55,7 +56,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test getId
      *
-     * Validate the App\Document\User::getId method
+     * Validate the Chronos\UserBundle\Document\User::getId method
      *
      * @return void
      */
@@ -69,8 +70,8 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test username
      *
-     * Validate the App\Document\User::getUsername method
-     * Validate the App\Document\User::setUsername method
+     * Validate the Chronos\UserBundle\Document\User::getUsername method
+     * Validate the Chronos\UserBundle\Document\User::setUsername method
      *
      * @return void
      */
@@ -85,8 +86,8 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test password
      *
-     * Validate the App\Document\User::getPassword method
-     * Validate the App\Document\User::setPassword method
+     * Validate the Chronos\UserBundle\Document\User::getPassword method
+     * Validate the Chronos\UserBundle\Document\User::setPassword method
      *
      * @return void
      */
@@ -101,8 +102,8 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test salt
      *
-     * Validate the App\Document\User::getSalt method
-     * Validate the App\Document\User::setSalt method
+     * Validate the Chronos\UserBundle\Document\User::getSalt method
+     * Validate the Chronos\UserBundle\Document\User::setSalt method
      *
      * @return void
      */
@@ -117,7 +118,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Role provider
      *
-     * Return a set of ArrayColelction and array to validate the App\Document\User::getRoles method
+     * Return a set of ArrayColelction and array to validate the Chronos\UserBundle\Document\User::getRoles method
      *
      * @return array
      */
@@ -137,8 +138,8 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test roles
      *
-     * Validate the App\Document\User::getRoles method
-     * Validate the App\Document\User::setRoles method
+     * Validate the Chronos\UserBundle\Document\User::getRoles method
+     * Validate the Chronos\UserBundle\Document\User::setRoles method
      *
      * @param ArrayCollection $roles    The roles to inject into the user
      * @param array           $expected The expected result
@@ -157,7 +158,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test eraseCredentials
      *
-     * Validate the App\Document\User::eraseCredentials method
+     * Validate the Chronos\UserBundle\Document\User::eraseCredentials method
      *
      * @return void
      */
@@ -182,7 +183,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test addRole
      *
-     * Validate the App\Document\User::addRole method
+     * Validate the Chronos\UserBundle\Document\User::addRole method
      *
      * @return void
      */
@@ -206,7 +207,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     /**
      * Test removeRole
      *
-     * Validate the App\Document\User::removeRole method
+     * Validate the Chronos\UserBundle\Document\User::removeRole method
      *
      * @return void
      */

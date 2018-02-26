@@ -14,10 +14,10 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Tests\Documents;
+namespace Chronos\UserBundle\Tests\Documents;
 
-use App\Document\Role;
-use App\Tests\AbstractTestClass;
+use Chronos\RoleBundle\Document\Role;
+use Chronos\ApiBundle\Tests\AbstractTestClass;
 
 /**
  * Role test
@@ -35,7 +35,7 @@ class RoleTest extends AbstractTestClass
     /**
      * Test getId
      *
-     * Validate the App\Document\Role::getId method
+     * Validate the Chronos\UserBundle\Document\Role::getId method
      *
      * @return void
      */
@@ -49,7 +49,7 @@ class RoleTest extends AbstractTestClass
     /**
      * Test getLabel
      *
-     * Validate the App\Document\Role::getLabel method
+     * Validate the Chronos\UserBundle\Document\Role::getLabel method
      *
      * @return void
      */
@@ -63,7 +63,7 @@ class RoleTest extends AbstractTestClass
     /**
      * Test setLabel
      *
-     * Validate the App\Document\Role::setLabel method
+     * Validate the Chronos\UserBundle\Document\Role::setLabel method
      *
      * @return void
      */

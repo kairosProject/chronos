@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Tests;
+namespace Chronos\ApiBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
 

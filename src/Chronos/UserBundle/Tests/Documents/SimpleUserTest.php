@@ -14,14 +14,14 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Tests\Documents;
+namespace Chronos\UserBundle\Tests\Documents;
 
-use App\Document\Administrator;
+use Chronos\UserBundle\Document\SimpleUser;
 
 /**
- * Administrator test
+ * SimpleUser test
  *
- * This class is used to validate the Administrator implementation.
+ * This class is used to validate the SimpleUser implementation.
  *
  * @category Test
  * @package  Chronos
@@ -29,7 +29,7 @@ use App\Document\Administrator;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-class AdministratorTest extends AbstractTestUser
+class SimpleUserTest extends AbstractTestUser
 {
     /**
      * Get tested class
@@ -37,10 +37,10 @@ class AdministratorTest extends AbstractTestUser
      * Return the tested class name
      *
      * @return string
-     * @see    \App\Tests\AbstractTestClass::getTestedClass()
+     * @see    \Chronos\UserBundle\Tests\AbstractTestClass::getTestedClass()
      */
     protected function getTestedClass() : string
     {
-        return Administrator::class;
+        return SimpleUser::class;
     }
 }

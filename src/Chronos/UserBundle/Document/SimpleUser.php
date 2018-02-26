@@ -8,39 +8,28 @@ declare(strict_types=1);
  *
  * PHP version 5.6
  *
- * @category Test
+ * @category Document
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Tests\Documents;
+namespace Chronos\UserBundle\Document;
 
-use App\Document\SimpleUser;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
 
 /**
- * SimpleUser test
+ * Simple user
  *
- * This class is used to validate the SimpleUser implementation.
+ * This class is used to store and manage the simple users of the Chronos\UserBundlelication.
  *
- * @category Test
+ * @category Document
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
+ * @Document
  */
-class SimpleUserTest extends AbstractTestUser
+class SimpleUser extends User
 {
-    /**
-     * Get tested class
-     *
-     * Return the tested class name
-     *
-     * @return string
-     * @see    \App\Tests\AbstractTestClass::getTestedClass()
-     */
-    protected function getTestedClass() : string
-    {
-        return SimpleUser::class;
-    }
 }

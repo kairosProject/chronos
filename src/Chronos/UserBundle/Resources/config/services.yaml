@@ -1,0 +1,25 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: false
+
+    UserRepository:
+        class: Doctrine\ODM\MongoDB\DocumentRepository
+        factory: ['@doctrine_mongodb.odm.document_manager', getRepository]
+        arguments:
+            - "ChronosUserBundle:SimpleUser"
+    UserProvider:
+        class: Chronos\ApiBundle\Provider\GenericDocumentProvider
+        arguments:
+            - "@UserRepository"
+    UserDispatcher:
+        class: Symfony\Component\EventDispatcher\EventDispatcher
+        calls:
+            - ['addListener', [!php/const Chronos\ApiBundle\Event\ApiControllerEventInterface::EVENT_GET_MULTIPLE, ['@UserProvider', 'provideDocuments']]]
+    UserController:
+        class: Chronos\UserBundle\Controller\UserController
+        arguments:
+            - "@UserDispatcher"
+        public: true

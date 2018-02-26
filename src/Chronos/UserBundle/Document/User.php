@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace App\Document;
+namespace Chronos\UserBundle\Document;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -25,21 +25,28 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\DiscriminatorMap;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\ReferenceMany;
+use Chronos\RoleBundle\Document\Role;
 
 /**
  * User
  *
- * This class is used as parent for the user instances of the application. It implement the base UserInterface.
+ * This class is used as parent for the user instances of the Chronos\UserBundlelication. It implement the base
+ * UserInterface.
  *
- * @category                                                   Document
- * @package                                                    Chronos
- * @author                                                     matthieu vallance <matthieu.vallance@cscfa.fr>
- * @license                                                    MIT <https://opensource.org/licenses/MIT>
- * @link                                                       http://cscfa.fr
+ * @category                             Document
+ * @package                              Chronos
+ * @author                               matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license                              MIT <https://opensource.org/licenses/MIT>
+ * @link                                 http://cscfa.fr
  * @MappedSuperclass()
  * @InheritanceType("SINGLE_COLLECTION")
  * @DiscriminatorField("userType")
- * @DiscriminatorMap({"simple_user"="App\Document\SimpleUser", "admin_user"="App\Document\Administrator"})
+ * @DiscriminatorMap(
+ *      {
+ *          "simple_user"="Chronos\UserBundle\Document\SimpleUser",
+ *          "admin_user"="Chronos\UserBundle\Document\Administrator"
+ *      }
+ * )
  */
 abstract class User implements UserInterface
 {
@@ -88,8 +95,8 @@ abstract class User implements UserInterface
      *
      * The set of available roles for the current user
      *
-     * @var                                               ArrayCollection
-     * @ReferenceMany(targetDocument="App\Document\Role")
+     * @var                                                              ArrayCollection
+     * @ReferenceMany(targetDocument="Chronos\RoleBundle\Document\Role")
      */
     private $roles;
 
