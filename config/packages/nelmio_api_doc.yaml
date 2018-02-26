@@ -4,6 +4,6 @@ nelmio_api_doc:
             title: Chronos
             description: The kairos API
             version: 1.0.0-dev
-    routes: # to filter documented routes
+    areas: # to filter documented routes
         path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/user # Accepts routes under /api except /api/doc

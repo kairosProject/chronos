@@ -18,6 +18,7 @@ namespace Chronos\ApiBundle\Event;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Controller event interface
@@ -69,4 +70,13 @@ interface ControllerEventInterface extends EventInterface
      * @return Response|null
      */
     public function getResponse() : ?Response;
+
+    /**
+     * Get parameters
+     *
+     * Return the event parameter bag
+     *
+     * @return ParameterBag
+     */
+    public function getParameters() : ParameterBag;
 }

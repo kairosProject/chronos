@@ -1,0 +1,20 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: false
+
+    api.serializer.json.encoder:
+        class: Symfony\Component\Serializer\Encoder\JsonEncoder
+    api.serializer.object.normalizer:
+        class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+    api.serializer:
+        class: Symfony\Component\Serializer\Serializer
+        arguments:
+            - ["@api.serializer.object.normalizer"]
+            - ["@api.serializer.json.encoder"]
+    api.response_factory.json:
+        class: Chronos\ApiBundle\Formatter\Response\JsonResponseFactory
+        arguments:
+            - "@logger"

@@ -8,42 +8,38 @@ declare(strict_types=1);
  *
  * PHP version 5.6
  *
- * @category Provider
+ * @category Formatter
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Chronos\ApiBundle\Provider;
+namespace Chronos\ApiBundle\Formatter\Response;
+
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Document provider interface
+ * Response factory interface
  *
- * This interface define the main document provider methods
+ * This interface define the main ResponseFactory methods
  *
- * @category Provider
+ * @category Formatter
  * @package  Chronos
  * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-interface DocumentProviderInterface
+interface ResponseFactoryInterface
 {
     /**
-     * On data provided
+     * Create response
      *
-     * This constant define the event throwed in case of data fully provided
+     * This method create and return a response instance
      *
-     * @var string
+     * @param array $context The creation context
+     *
+     * @return Response
      */
-    const ON_DATA_PROVIDED = 'on_data_provided';
-
-    /**
-     * Data provided
-     *
-     * This constant indicate the data rpovided key into a parameter bag
-     *
-     * @var string
-     */
-    const DATA_PROVIDED = 'data_provided';
+    public function createResponse(array $context) : Response;
 }
+

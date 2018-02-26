@@ -14,12 +14,22 @@ services:
         class: Chronos\ApiBundle\Provider\GenericDocumentProvider
         arguments:
             - "@UserRepository"
+            - "@logger"
+    UserSerializer:
+        class: Chronos\ApiBundle\Formatter\GenericEventDataFormatter
+        arguments:
+            - "@api.serializer"
+            - "json"
+            - "@api.response_factory.json"
+            - "@logger"
+            - {isJson: true}
     UserDispatcher:
         class: Symfony\Component\EventDispatcher\EventDispatcher
         calls:
-            - ['addListener', [!php/const Chronos\ApiBundle\Event\ApiControllerEventInterface::EVENT_GET_MULTIPLE, ['@UserProvider', 'provideDocuments']]]
+            - ['addListener', [!php/const Chronos\ApiBundle\Event\ApiControllerEventInterface::EVENT_GET_MULTIPLE, ['@UserProvider', 'provideDocuments'], 10]]
+            - ['addListener', [!php/const Chronos\ApiBundle\Event\ApiControllerEventInterface::EVENT_GET_MULTIPLE, ['@UserSerializer', 'format'], 0]]
     UserController:
-        class: Chronos\UserBundle\Controller\UserController
+        class: Chronos\UserBundle\Controller\SimpleUserController
         arguments:
             - "@UserDispatcher"
         public: true

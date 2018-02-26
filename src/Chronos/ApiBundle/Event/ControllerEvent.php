@@ -19,6 +19,7 @@ namespace Chronos\ApiBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Controller event
@@ -52,6 +53,15 @@ class ControllerEvent extends Event implements ControllerEventInterface
     private $response;
 
     /**
+     * Parameter
+     *
+     * The internal parameter bag
+     *
+     * @var ParameterBag
+     */
+    private $parameters;
+
+    /**
      * Construct
      *
      * The default ControllerEvent constructor
@@ -63,6 +73,7 @@ class ControllerEvent extends Event implements ControllerEventInterface
     public function __construct(Request $request)
     {
         $this->request = $request;
+        $this->parameters = new ParameterBag();
     }
 
     /**
@@ -114,5 +125,17 @@ class ControllerEvent extends Event implements ControllerEventInterface
     public function getResponse() : ?Response
     {
         return $this->response;
+    }
+
+    /**
+     * Get parameters
+     *
+     * Return the event parameter bag
+     *
+     * @return ParameterBag
+     */
+    public function getParameters() : ParameterBag
+    {
+        return $this->parameters;
     }
 }

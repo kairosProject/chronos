@@ -12,4 +12,5 @@ return [
     Chronos\ApiBundle\ChronosApiBundle::class => ['all' => true],
     Chronos\UserBundle\ChronosUserBundle::class => ['all' => true],
     Chronos\RoleBundle\ChronosRoleBundle::class => ['all' => true],
+    Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
 ];

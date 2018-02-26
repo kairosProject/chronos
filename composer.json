@@ -11,11 +11,14 @@
 		"nelmio/api-doc-bundle": "^3.1",
 		"predis/predis": "^1.1",
 		"snc/redis-bundle": "^2.0",
+		"symfony/asset": "^4.0",
 		"symfony/console": "^4.0",
 		"symfony/flex": "^1.0",
 		"symfony/framework-bundle": "^4.0",
 		"symfony/lts": "^4@dev",
+		"symfony/monolog-bundle": "^3.1",
 		"symfony/security-bundle": "^4.0",
+		"symfony/serializer": "^4.0",
 		"symfony/yaml": "^4.0"
 	},
     "require-dev": {

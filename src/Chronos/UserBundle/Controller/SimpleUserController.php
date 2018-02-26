@@ -21,6 +21,8 @@ use Chronos\ApiBundle\Event\ControllerEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * User
@@ -34,7 +36,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-class UserController implements ApiControllerEventInterface
+class SimpleUserController implements ApiControllerEventInterface
 {
     /**
      * Dispatcher
@@ -66,6 +68,14 @@ class UserController implements ApiControllerEventInterface
      *
      * @param Request $request The original request
      *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the existing users",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @Model(type=Chronos\UserBundle\Document\SimpleUser::class, groups={"full"})
+     *     )
+     * )
      * @return Response
      */
     public function getBulkAction(Request $request)
