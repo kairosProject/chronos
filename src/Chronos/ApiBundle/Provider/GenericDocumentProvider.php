@@ -91,16 +91,12 @@ class GenericDocumentProvider implements DocumentProviderInterface
      *
      * Provide the documents relative to the providing process
      *
-     * @param ControllerEventInterface $event      The current dispatched event
-     * @param string                   $eventName  The current event name
-     * @param EventDispatcherInterface $dispatcher The calling dispatcher
+     * @param ControllerEventInterface $event The current dispatched event
      *
      * @return void
      */
     public function provideDocuments(
-        ControllerEventInterface $event,
-        string $eventName,
-        EventDispatcherInterface $dispatcher
+        ControllerEventInterface $event
     ) : void {
         $data = $this->repository->findAll();
 

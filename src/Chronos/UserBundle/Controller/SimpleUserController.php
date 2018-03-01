@@ -84,7 +84,7 @@ class SimpleUserController implements ApiControllerEventInterface
      *      )
      *  )
      * )
-     * @return                                                    Response
+     * @return        Response
      */
     public function getBulkAction(Request $request)
     {

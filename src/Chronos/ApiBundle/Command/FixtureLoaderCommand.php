@@ -110,6 +110,9 @@ class FixtureLoaderCommand extends Command
      * execute() method, you set the code to execute by passing
      * a Closure to the setCode() method.
      *
+     * @param InputInterface  $input  The command input
+     * @param OutputInterface $output The command output
+     *
      * @return null|int null or 0 if everything went fine, or an error code
      */
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -105,11 +105,14 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
      *
      * The default GenericEventDataFormater constructor
      *
-     * @param Serializer               $serializer      The serializer to process the formating process
-     * @param string                   $format          The serialization destination format
-     * @param ResponseFactoryInterface $responseFactory The ResponseFactory relevant for the serializing format
-     * @param array                    $baseContext     The base response factory context
-     * @param string                   $sourceKey       The source key where the data to format are located into the parameters
+     * @param Serializer               $serializer        The serializer to process the formating process
+     * @param string                   $format            The serialization destination format
+     * @param ResponseFactoryInterface $responseFactory   The ResponseFactory relevant for the serializing format
+     * @param LoggerInterface          $logger            The main application logger
+     * @param array                    $baseContext       The base response factory context
+     * @param array                    $serializerContext The serializer context
+     * @param string                   $sourceKey         The source key where the data to format are located into the
+     *                                                    parameters
      *
      * @return void
      */
@@ -138,14 +141,12 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
     /**
      * Format
      *
-     * @param ControllerEventInterface $event
-     * @param string                   $eventName
-     * @param EventDispatcherInterface $dispatcher
+     * @param ControllerEventInterface $event The calling event object
+     *
+     * @return void
      */
     public function format(
-        ControllerEventInterface $event,
-        string $eventName,
-        EventDispatcherInterface $dispatcher
+        ControllerEventInterface $event
     ) : void {
         $this->logger->debug('Get elements to serialize', ['source' => $this->sourceKey]);
         $data = $event->getParameters()->get($this->sourceKey);
@@ -157,6 +158,7 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
                 'serializer_context' => $this->serializerContext
             ]
         );
+
         $formattedValue = $this->serializer->serialize($data, $this->format, $this->serializerContext);
 
         $context = array_replace($this->baseContext, ['data' => $formattedValue]);

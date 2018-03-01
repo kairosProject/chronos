@@ -56,7 +56,7 @@ abstract class User implements UserInterface
      *
      * The current user id
      *
-     * @var              string
+     * @var                 string
      * @Id()
      * @Groups({"user.id"})
      */
@@ -67,7 +67,7 @@ abstract class User implements UserInterface
      *
      * The user name of the current user
      *
-     * @var                  string
+     * @var                       string
      * @Field(type="string")
      * @Groups({"user.username"})
      */
@@ -78,7 +78,7 @@ abstract class User implements UserInterface
      *
      * The password of the current user
      *
-     * @var                  string
+     * @var                       string
      * @Field(type="string")
      * @Groups({"user.password"})
      */
@@ -89,7 +89,7 @@ abstract class User implements UserInterface
      *
      * The password salt for the current user
      *
-     * @var                  string
+     * @var                   string
      * @Field(type="string")
      * @Groups({"user.salt"})
      */
@@ -102,7 +102,6 @@ abstract class User implements UserInterface
      *
      * @var                                                              ArrayCollection
      * @ReferenceMany(targetDocument="Chronos\RoleBundle\Document\Role")
-     * @Groups({"user.roles"})
      */
     private $roles;
 
@@ -311,5 +310,18 @@ abstract class User implements UserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Get role entities
+     *
+     * Return the set of roles for the current user
+     *
+     * @return                 ArrayCollection
+     * @Groups({"user.roles"})
+     */
+    public function getRoleEntities()
+    {
+        return $this->roles;
     }
 }

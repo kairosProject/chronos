@@ -18,6 +18,7 @@ namespace Chronos\RoleBundle\Resources\Fixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Chronos\RoleBundle\Document\Role;
 
 /**
  * Role fixture loader
@@ -43,5 +44,15 @@ class RoleFixtureLoader extends AbstractFixture
      */
     public function load(ObjectManager $manager)
     {
+        $roles = ['ROLE_USER_GET_SIMPLE', 'ROLE_USER_GET_MULTIPLE'];
+
+        foreach ($roles as $roleLabel) {
+            $role = new Role();
+            $role->setLabel($roleLabel);
+
+            $manager->persist($role);
+        }
+
+        $manager->flush();
     }
 }

@@ -1,0 +1,58 @@
+services:
+    abstract_api.serializer.annotation.reader:
+        class: Doctrine\Common\Annotations\AnnotationReader
+        abstract: true
+        public: false
+    api.serializer.annotation.reader:
+        parent: abstract_api.serializer.annotation.reader
+        public: false
+        
+    abstract_api.serializer.annotation.loader:
+        class: Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader
+        arguments:
+            - "@api.serializer.annotation.reader"
+        public: false
+        abstract: true
+    api.serializer.annotation.loader:
+        parent: abstract_api.serializer.annotation.loader
+        public: false
+        
+    abstract_api.serializer.metadata.factory:
+        class: Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory
+        arguments:
+            - "@api.serializer.annotation.loader"
+        public: false
+        abstract: true
+    api.serializer.metadata.factory:
+        parent: abstract_api.serializer.metadata.factory
+        public: false
+        
+    abstract_api.serializer.json.encoder:
+        class: Symfony\Component\Serializer\Encoder\JsonEncoder
+        public: false
+        abstract: true
+    api.serializer.json.encoder:
+        parent: abstract_api.serializer.json.encoder
+        public: false
+        
+    abstract_api.serializer.object.normalizer:
+        class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+        arguments:
+            - "@api.serializer.metadata.factory"
+        public: false
+        abstract: true
+    api.serializer.object.normalizer:
+        parent: abstract_api.serializer.object.normalizer
+        public: false
+        
+    abstract_api.serializer:
+        class: Symfony\Component\Serializer\Serializer
+        arguments:
+            - ["@api.serializer.object.normalizer"]
+            - ["@api.serializer.json.encoder"]
+        public: false
+        abstract: true
+    api.serializer:
+        parent: abstract_api.serializer
+        public: false
+    

@@ -40,7 +40,7 @@ class Role
      *
      * The role Id
      *
-     * @var              string
+     * @var                 string
      * @Id
      * @Groups({"role.id"})
      */
@@ -51,7 +51,7 @@ class Role
      *
      * The role label
      *
-     * @var                  string
+     * @var                    string
      * @Field(type="string")
      * @Groups({"role.label"})
      */
