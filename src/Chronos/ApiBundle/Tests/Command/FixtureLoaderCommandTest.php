@@ -18,12 +18,10 @@ namespace Chronos\ApiBundle\Tests\Command;
 
 use Chronos\ApiBundle\Tests\AbstractTestClass;
 use Chronos\ApiBundle\Command\FixtureLoaderCommand;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Config\FileLocatorInterface;
-use PHPUnit\Framework\MockObject\InvocationMocker;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
 
