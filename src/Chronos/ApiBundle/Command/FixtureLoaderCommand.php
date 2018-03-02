@@ -46,7 +46,7 @@ class FixtureLoaderCommand extends Command
      *
      * @var ObjectManager
      */
-    private $objectManager;
+    private $dbExecutor;
 
     /**
      * File locator
@@ -56,6 +56,15 @@ class FixtureLoaderCommand extends Command
      * @var FileLocator
      */
     private $fileLocator;
+
+    /**
+     * Loader
+     *
+     * The fixture loader instance
+     *
+     * @var Loader
+     */
+    private $loader;
 
     /**
      * Bundle list
@@ -71,16 +80,18 @@ class FixtureLoaderCommand extends Command
      *
      * The default FixtureLoaderCommand construct
      *
-     * @param ObjectManager $manager     The application object manager
-     * @param FileLocator   $fileLoactor The application file locator
-     * @param array         $bundles     The application bundle list
+     * @param MongoDBExecutor $executor    The mongoDB fixture executor
+     * @param Loader          $loader      The fixture loader
+     * @param FileLocator     $fileLoactor The application file locator
+     * @param array           $bundles     The application bundle list
      *
      * @return void
      */
-    public function __construct(ObjectManager $manager, FileLocator $fileLoactor, array $bundles)
+    public function __construct(MongoDBExecutor $executor, Loader $loader, FileLocator $fileLoactor, array $bundles)
     {
-        $this->objectManager = $manager;
+        $this->dbExecutor = $executor;
         $this->fileLocator = $fileLoactor;
+        $this->loader = $loader;
         $this->bundleList = array_keys($bundles);
 
         parent::__construct();
@@ -117,13 +128,11 @@ class FixtureLoaderCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new Loader();
-
         foreach ($this->bundleList as $bundleName) {
             $directoryLocator = sprintf('@%s/Resources/Fixtures', $bundleName);
 
             try {
-                $loader->loadFromDirectory(
+                $this->loader->loadFromDirectory(
                     $this->fileLocator->locate($directoryLocator)
                 );
 
@@ -141,9 +150,8 @@ class FixtureLoaderCommand extends Command
             if ($output->isVerbose()) {
                 $output->writeln('<info>Executing fixtures</info>');
             }
-            $purger = new MongoDBPurger();
-            $executor = new MongoDBExecutor($this->objectManager, $purger);
-            $executor->execute($loader->getFixtures());
+
+            $this->dbExecutor->execute($this->loader->getFixtures());
         }
     }
 }

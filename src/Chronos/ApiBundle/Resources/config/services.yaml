@@ -1,8 +1,19 @@
 services:
+    command.fixture.loader_loader:
+        class: Doctrine\Common\DataFixtures\Loader
+    command.fixture.loader_purger:
+        class: Doctrine\Common\DataFixtures\Purger\MongoDBPurger
+    command.fixture.loader_executor:
+        class: Doctrine\Common\DataFixtures\Executor\MongoDBExecutor
+        arguments:
+            - '@doctrine_mongodb.odm.document_manager'
+            - '@command.fixture.loader_purger'
+
     command.fixture.loader:
         class: Chronos\ApiBundle\Command\FixtureLoaderCommand
         arguments:
-            - '@doctrine_mongodb.odm.document_manager'
+            - '@command.fixture.loader_executor'
+            - '@command.fixture.loader_loader'
             - '@file_locator'
             - '%kernel.bundles%'
         tags:

@@ -54,6 +54,34 @@ abstract class AbstractTestClass extends TestCase
     }
 
     /**
+     * Create method reflection
+     *
+     * Return a reflection method, according to the instance class name and mathod. Abble to follow the
+     * inheritance tree to find the property.
+     *
+     * @param string $instanceClassName The base instance class name
+     * @param string $method            The method name to find
+     *
+     * @return \ReflectionMethod|NULL
+     */
+    protected function createMethodReflection(string $instanceClassName, string $method) : ?\ReflectionMethod
+    {
+        $reflectionClass = new \ReflectionClass($instanceClassName);
+
+        if ($reflectionClass->hasMethod($method)) {
+            $methodReflection = $reflectionClass->getMethod($method);
+            return $methodReflection;
+        }
+
+        $parentClass = $reflectionClass->getParentClass();
+        if (!$parentClass) {
+            return null;
+        }
+
+        return $this->createMethodReflection($parentClass->getName(), $method);
+    }
+
+    /**
      * Create property reflection
      *
      * Return a reflection property, according to the instance class name and property. Abble to follow the
@@ -70,7 +98,6 @@ abstract class AbstractTestClass extends TestCase
 
         if ($reflectionClass->hasProperty($property)) {
             $propertyReflection = $reflectionClass->getProperty($property);
-            $propertyReflection->setAccessible(true);
             return $propertyReflection;
         }
 
@@ -92,7 +119,7 @@ abstract class AbstractTestClass extends TestCase
      *
      * @return \ReflectionProperty
      */
-    protected function getClassProperty(string $property, bool $accessible = true)
+    protected function getClassProperty(string $property, bool $accessible = true) : ?\ReflectionProperty
     {
         $property = $this->createPropertyReflection($this->classReflection->getName(), $property);
 
@@ -108,6 +135,34 @@ abstract class AbstractTestClass extends TestCase
         $property->setAccessible($accessible);
 
         return $property;
+    }
+
+    /**
+     * Get class method
+     *
+     * Return an instance of ReflectionMethod for a given method name
+     *
+     * @param string $method     The method name to reflex
+     * @param bool   $accessible The accessibility state of the property
+     *
+     * @return \ReflectionMethod
+     */
+    protected function getClassMethod(string $method, bool $accessible = true) : ?\ReflectionMethod
+    {
+        $method = $this->createMethodReflection($this->classReflection->getName(), $method);
+
+        if (!$method) {
+            $this->fail(
+                sprintf(
+                    'The class "%s" is expected to store the method "%s"',
+                    $this->getTestedClass(),
+                    $method
+                )
+            );
+        }
+        $method->setAccessible($accessible);
+
+        return $method;
     }
 
     /**
