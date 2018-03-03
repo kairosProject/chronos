@@ -54,62 +54,6 @@ abstract class AbstractTestClass extends TestCase
     }
 
     /**
-     * Create method reflection
-     *
-     * Return a reflection method, according to the instance class name and mathod. Abble to follow the
-     * inheritance tree to find the property.
-     *
-     * @param string $instanceClassName The base instance class name
-     * @param string $method            The method name to find
-     *
-     * @return \ReflectionMethod|NULL
-     */
-    protected function createMethodReflection(string $instanceClassName, string $method) : ?\ReflectionMethod
-    {
-        $reflectionClass = new \ReflectionClass($instanceClassName);
-
-        if ($reflectionClass->hasMethod($method)) {
-            $methodReflection = $reflectionClass->getMethod($method);
-            return $methodReflection;
-        }
-
-        $parentClass = $reflectionClass->getParentClass();
-        if (!$parentClass) {
-            return null;
-        }
-
-        return $this->createMethodReflection($parentClass->getName(), $method);
-    }
-
-    /**
-     * Create property reflection
-     *
-     * Return a reflection property, according to the instance class name and property. Abble to follow the
-     * inheritance tree to find the property.
-     *
-     * @param string $instanceClassName The base instance class name
-     * @param string $property          The property name to find
-     *
-     * @return \ReflectionProperty|NULL
-     */
-    protected function createPropertyReflection(string $instanceClassName, string $property) : ?\ReflectionProperty
-    {
-        $reflectionClass = new \ReflectionClass($instanceClassName);
-
-        if ($reflectionClass->hasProperty($property)) {
-            $propertyReflection = $reflectionClass->getProperty($property);
-            return $propertyReflection;
-        }
-
-        $parentClass = $reflectionClass->getParentClass();
-        if (!$parentClass) {
-            return null;
-        }
-
-        return $this->createPropertyReflection($parentClass->getName(), $property);
-    }
-
-    /**
      * Get class property
      *
      * Return an instance of ReflectionProperty for a given property name
@@ -214,7 +158,17 @@ abstract class AbstractTestClass extends TestCase
         $propertyReflex = $this->getClassProperty($property);
         $instance = $this->getInstance();
 
-        $this->assertSame($instance, $instance->{$method}($value));
+        $method = $this->getClassMethod($method, false);
+        $this->assertTrue(
+            $method->isPublic(),
+            sprintf(
+                'The method "%s" of class "%s" is expected to be public',
+                $method,
+                $this->getTestedClass()
+            )
+        );
+
+        $this->assertSame($instance, $method->invoke($instance, $value));
         $this->assertEquals($expected, $propertyReflex->getValue($instance));
 
 
@@ -259,9 +213,75 @@ abstract class AbstractTestClass extends TestCase
         $instance = $this->getInstance();
         $propertyReflex->setValue($instance, $value);
 
-        $this->assertEquals($expected, $instance->{$method}());
+        $method = $this->getClassMethod($method, false);
+        $this->assertTrue(
+            $method->isPublic(),
+            sprintf(
+                'The method "%s" of class "%s" is expected to be public',
+                $method,
+                $this->getTestedClass()
+            )
+        );
+
+        $this->assertEquals($expected, $method->invoke($instance));
 
         return;
+    }
+
+    /**
+     * Create method reflection
+     *
+     * Return a reflection method, according to the instance class name and mathod. Abble to follow the
+     * inheritance tree to find the property.
+     *
+     * @param string $instanceClassName The base instance class name
+     * @param string $method            The method name to find
+     *
+     * @return \ReflectionMethod|NULL
+     */
+    private function createMethodReflection(string $instanceClassName, string $method) : ?\ReflectionMethod
+    {
+        $reflectionClass = new \ReflectionClass($instanceClassName);
+
+        if ($reflectionClass->hasMethod($method)) {
+            $methodReflection = $reflectionClass->getMethod($method);
+            return $methodReflection;
+        }
+
+        $parentClass = $reflectionClass->getParentClass();
+        if (!$parentClass) {
+            return null;
+        }
+
+        return $this->createMethodReflection($parentClass->getName(), $method);
+    }
+
+    /**
+     * Create property reflection
+     *
+     * Return a reflection property, according to the instance class name and property. Abble to follow the
+     * inheritance tree to find the property.
+     *
+     * @param string $instanceClassName The base instance class name
+     * @param string $property          The property name to find
+     *
+     * @return \ReflectionProperty|NULL
+     */
+    private function createPropertyReflection(string $instanceClassName, string $property) : ?\ReflectionProperty
+    {
+        $reflectionClass = new \ReflectionClass($instanceClassName);
+
+        if ($reflectionClass->hasProperty($property)) {
+            $propertyReflection = $reflectionClass->getProperty($property);
+            return $propertyReflection;
+        }
+
+        $parentClass = $reflectionClass->getParentClass();
+        if (!$parentClass) {
+            return null;
+        }
+
+        return $this->createPropertyReflection($parentClass->getName(), $property);
     }
 
     /**

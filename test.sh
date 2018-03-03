@@ -71,7 +71,7 @@ echo "$TEST_RES" >> doc/phpcbf.txt
 test "$PHP_PATH vendor/bin/phpunit" PHPUnit 100
 echo "$TEST_RES" > doc/phpunit.txt
 
-test "$PHP_PATH vendor/bin/infection --threads=4 --min-msi=70 --only-covered --log-verbosity=1" Infection 100
+test "$PHP_PATH vendor/bin/infection --threads=4 --min-msi=100 --log-verbosity=1" Infection 100
 echo "$TEST_RES" > doc/infection.txt
 
 test "$PHP_PATH vendor/bin/phpcs --standard=./csruleset.xml src/" PHPCS 100

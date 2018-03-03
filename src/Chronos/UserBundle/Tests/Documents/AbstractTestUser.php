@@ -191,6 +191,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     {
         $instance = $this->getInstance();
         $roleProperty = $this->getClassProperty('roles');
+        $this->assertTrue($this->getClassMethod('addRole', false)->isPublic());
 
         $roleProperty->setValue($instance, new ArrayCollection());
         $role = $this->createMock(Role::class);
@@ -215,6 +216,7 @@ abstract class AbstractTestUser extends AbstractTestClass
     {
         $instance = $this->getInstance();
         $roleProperty = $this->getClassProperty('roles');
+        $this->assertTrue($this->getClassMethod('removeRole', false)->isPublic());
 
         $role = $this->createMock(Role::class);
         $roleProperty->setValue($instance, new ArrayCollection([$role]));

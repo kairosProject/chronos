@@ -52,6 +52,9 @@ class FixtureLoaderCommandTest extends AbstractTestClass
         $bundles = ['ChronosApiBundle'=>'bundle'];
         $loader = $this->createMock(Loader::class);
 
+        $this->assertTrue($this->getClassMethod('configure', false)->isProtected());
+        $this->assertTrue($this->getClassMethod('execute', false)->isProtected());
+
         $class = $this->getTestedClass();
         $instance = new $class($executor, $loader, $fileLoactor, $bundles);
 
