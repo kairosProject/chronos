@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace Chronos\ApiBundle\Provider;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Chronos\ApiBundle\Event\ControllerEventInterface;
 use Psr\Log\LoggerInterface;
