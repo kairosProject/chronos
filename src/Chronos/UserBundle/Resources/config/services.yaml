@@ -1,8 +1,4 @@
 services:
-    UserRoleNameConverter:
-        class: Chronos\UserBundle\Converter\RoleNameConverter
-        public: false
-        
     UserRepository:
         class: Doctrine\ODM\MongoDB\DocumentRepository
         factory: ['@doctrine_mongodb.odm.document_manager', getRepository]
@@ -18,8 +14,10 @@ services:
         public: false
     
     UserAttributeConverter:
-        class: Chronos\UserBundle\Converter\RoleNameConverter
+        parent: abstract_api.serializer.property_name_converter
         public: false
+        arguments:
+            - {'roleEntities': 'roles'}
     user.serializer.object.normalizer:
         parent: abstract_api.serializer.object.normalizer
         public: false

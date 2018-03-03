@@ -35,6 +35,15 @@ services:
         parent: abstract_api.serializer.json.encoder
         public: false
         
+    abstract_api.serializer.property_name_converter:
+        class: Chronos\ApiBundle\Converter\GenericNameConverter
+        abstract: true
+        public: false
+    api.serializer.property_name_converter:
+        parent: abstract_api.serializer.property_name_converter
+        public: false
+        
+        
     abstract_api.serializer.object.normalizer:
         class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
         arguments:

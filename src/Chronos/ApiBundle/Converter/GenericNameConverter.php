@@ -14,14 +14,14 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Chronos\UserBundle\Converter;
+namespace Chronos\ApiBundle\Converter;
 
 use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
 
 /**
- * Role name converter
+ * Generic name converter
  *
- * This class is used to convert the properties name of the user roles elements
+ * This class is used to convert the properties name of the output elements
  *
  * @category Converter
  * @package  Chronos
@@ -29,8 +29,31 @@ use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-class RoleNameConverter implements NameConverterInterface
+class GenericNameConverter implements NameConverterInterface
 {
+    /**
+     * Name mapping
+     *
+     * The name convertion mapping
+     *
+     * @var array
+     */
+    private $nameMapping = [];
+
+    /**
+     * Construct
+     *
+     * The default GenericNameConverter constructor
+     *
+     * @param array $mapping The name convertion mapping
+     *
+     * @return void
+     */
+    public function __construct(array $mapping = [])
+    {
+        $this->nameMapping = $mapping;
+    }
+
     /**
      * Converts a property name to its denormalized value.
      *
@@ -40,8 +63,8 @@ class RoleNameConverter implements NameConverterInterface
      */
     public function denormalize($propertyName)
     {
-        if ($propertyName == 'roles') {
-            return 'roleEntities';
+        if (in_array($propertyName, $this->nameMapping)) {
+            return array_search($propertyName, $this->nameMapping);
         }
 
         return $propertyName;
@@ -56,8 +79,8 @@ class RoleNameConverter implements NameConverterInterface
      */
     public function normalize($propertyName)
     {
-        if ($propertyName == 'roleEntities') {
-            return 'roles';
+        if (array_key_exists($propertyName, $this->nameMapping)) {
+            return $this->nameMapping[$propertyName];
         }
 
         return $propertyName;
