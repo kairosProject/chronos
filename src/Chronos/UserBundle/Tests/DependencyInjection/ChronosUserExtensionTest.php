@@ -66,4 +66,3 @@ class ChronosUserExtensionTest extends AbstractTestClass
         return ChronosUserExtension::class;
     }
 }
-

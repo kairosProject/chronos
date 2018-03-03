@@ -65,7 +65,6 @@ class UserFixtureLoader extends AbstractFixture implements DependentFixtureInter
             $manager->persist($user);
         }
 
-        $manager->persist($user);
         $manager->flush();
     }
 

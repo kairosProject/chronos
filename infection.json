@@ -2,6 +2,12 @@
     "source": {
         "directories": [
             "src"
+        ],
+        "excludes": [
+        	"Chronos/ApiBundle/Tests",
+        	"Chronos/RoleBundle/Tests",
+        	"Chronos/UserBundle/Tests",
+        	"Tests"
         ]
     },
     "timeout": 10,
