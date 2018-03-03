@@ -152,6 +152,8 @@ abstract class AbstractTestUser extends AbstractTestClass
         $this->assertIsGetter('roles', 'getRoles', $roles, $expected);
         $this->assertIsSimpleSetter('roles', 'setRoles', $roles);
 
+        $this->assertIsSimpleGetter('roles', 'getRoleEntities', $roles);
+
         return;
     }
 
