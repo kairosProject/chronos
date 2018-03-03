@@ -17,6 +17,11 @@ declare(strict_types=1);
 namespace Chronos\ApiBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
+use Chronos\ApiBundle\DependencyInjection\CompilerPass\ApiProcessFileFinderPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 /**
  * Chronos api bundle
@@ -31,4 +36,20 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class ChronosApiBundle extends Bundle
 {
+    /**
+     * Builds the bundle.
+     *
+     * It is only ever called once when the cache is empty.
+     *
+     * @param ContainerBuilder $container The application container
+     *
+     * @return void
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(
+            new ApiProcessFileFinderPass(new Filesystem(), new Finder()),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION
+        );
+    }
 }

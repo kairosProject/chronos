@@ -48,9 +48,14 @@ class ChronosApiExtensionTest extends AbstractTestClass
         $yamlFileLoader->expects()->load('serializer.yaml');
         $yamlFileLoader->expects()->load('services.yaml');
 
+        $container = $this->createMock(ContainerBuilder::class);
+        $container->expects($this->once())
+            ->method('setParameter')
+            ->with($this->equalTo(ChronosApiExtension::API_BUNDLES_KEY), $this->equalTo(['ChronosBundle']));
+
         $instance = $this->getInstance();
 
-        $this->assertNull($instance->load([], $this->createMock(ContainerBuilder::class)));
+        $this->assertNull($instance->load(['chronos_api'=>['api_bundles'=>['ChronosBundle']]], $container));
 
         \Mockery::close();
     }

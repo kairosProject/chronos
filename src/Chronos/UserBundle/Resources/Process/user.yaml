@@ -1,0 +1,25 @@
+process:
+    user:
+        formatter:
+            serializer:
+                converter:
+                    - {'roleEntities': 'roles'}
+                context: 
+                    groups: ['user.id', 'user.username', 'user.roles', 'role.id']
+            format: json
+            response: api.response_factory.json
+            context:
+                isJson: true
+        provider:
+            factory: doctrine_mongodb.odm.document_manager
+        dispatcher:
+            - 
+                event: !php/const Chronos\ApiBundle\Event\ApiControllerEventInterface::EVENT_GET_MULTIPLE
+                listeners:
+                    - ['user.provider', 10]
+                    - ['user.formatter', 0]
+        controller:
+            class: Chronos\UserBundle\Controller\SimpleUserController
+            arguments:
+                - "@UserDispatcher"
+

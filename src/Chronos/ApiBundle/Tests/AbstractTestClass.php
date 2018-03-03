@@ -23,11 +23,12 @@ use PHPUnit\Framework\TestCase;
  *
  * This class is used as placeholder for test implementation
  *
- * @category Test
- * @package  Chronos
- * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
- * @license  MIT <https://opensource.org/licenses/MIT>
- * @link     http://cscfa.fr
+ * @category                                 Test
+ * @package                                  Chronos
+ * @author                                   matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license                                  MIT <https://opensource.org/licenses/MIT>
+ * @link                                     http://cscfa.fr
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractTestClass extends TestCase
 {

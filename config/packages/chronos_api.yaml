@@ -1,0 +1,4 @@
+chronos_api:
+    api_bundles:
+        - Chronos\UserBundle\ChronosUserBundle
+        - Chronos\RoleBundle\ChronosRoleBundle

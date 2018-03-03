@@ -35,6 +35,15 @@ use Symfony\Component\Config\FileLocator;
 class ChronosApiExtension extends Extension
 {
     /**
+     * Api bundles key
+     *
+     * Define which key is in used to store the api bundles class
+     *
+     * @var string
+     */
+    const API_BUNDLES_KEY = 'chronos_api_bundles';
+
+    /**
      * Load
      *
      * Loads a specific configuration.
@@ -47,13 +56,18 @@ class ChronosApiExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        unset($configs);
-
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__.'/../Resources/config')
         );
         $loader->load('services.yaml');
         $loader->load('serializer.yaml');
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        if (!empty($config['api_bundles'])) {
+            $container->setParameter(self::API_BUNDLES_KEY, $config['api_bundles']);
+        }
     }
 }
