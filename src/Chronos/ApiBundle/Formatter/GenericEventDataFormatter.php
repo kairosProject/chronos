@@ -16,13 +16,12 @@ declare(strict_types=1);
  */
 namespace Chronos\ApiBundle\Formatter;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Chronos\ApiBundle\Event\ControllerEventInterface;
-use Symfony\Component\Serializer\Serializer;
 use Chronos\ApiBundle\Formatter\Response\ResponseFactoryInterface;
 use Chronos\ApiBundle\Provider\DocumentProviderInterface;
 use Psr\Log\LoggerInterface;
 use Monolog\Logger;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Generic event data formatter
@@ -51,7 +50,7 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
      *
      * This property store the serializer to process the formating process
      *
-     * @var Serializer
+     * @var SerializerInterface
      */
     private $serializer;
 
@@ -105,7 +104,7 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
      *
      * The default GenericEventDataFormater constructor
      *
-     * @param Serializer               $serializer        The serializer to process the formating process
+     * @param SerializerInterface      $serializer        The serializer to process the formating process
      * @param string                   $format            The serialization destination format
      * @param ResponseFactoryInterface $responseFactory   The ResponseFactory relevant for the serializing format
      * @param LoggerInterface          $logger            The main application logger
@@ -117,7 +116,7 @@ class GenericEventDataFormatter implements EventDataFormatterInterface
      * @return void
      */
     public function __construct(
-        Serializer $serializer,
+        SerializerInterface $serializer,
         string $format,
         ResponseFactoryInterface $responseFactory,
         LoggerInterface $logger,

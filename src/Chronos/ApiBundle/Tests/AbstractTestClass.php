@@ -229,6 +229,37 @@ abstract class AbstractTestClass extends TestCase
     }
 
     /**
+     * Assert constructor
+     *
+     * Validate the tested instance constructor. If property is prefixed by 'same:', the assert same
+     * is used to validate the injected value.
+     *
+     * @param array $constructorArguments The constructor call arguments
+     * @param array $optionals            The optionals constructor arguments
+     *
+     * @return  void
+     * @example <pre>
+     *  assertConstructor(['injectedProperty', 'value'], ['injectedProperty', 'optionalValue']);
+     *  assertConstructor(['same:property', Mock]);
+     * </pre>
+     */
+    protected function assertConstructor(array $constructorArguments, array $optionals = [])
+    {
+        $instance = $this->classReflection->newInstanceArgs(array_values($constructorArguments));
+
+        foreach (array_merge($constructorArguments, $optionals) as $property => $value) {
+            if (preg_match('/^same:/', $property)) {
+                $property = substr($property, strlen('same:'));
+                $this->assertSame($value, $this->getClassProperty($property)->getValue($instance));
+
+                continue;
+            }
+
+            $this->assertEquals($value, $this->getClassProperty($property)->getValue($instance));
+        }
+    }
+
+    /**
      * Create method reflection
      *
      * Return a reflection method, according to the instance class name and mathod. Abble to follow the
