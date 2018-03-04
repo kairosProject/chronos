@@ -27,7 +27,7 @@ namespace Chronos\ServiceBundle\Metadata\Process;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-interface DispatcherMetadataInterface extends \Iterator, \ArrayAccess
+interface DispatcherMetadataInterface extends \Iterator
 {
     /**
      * Get events

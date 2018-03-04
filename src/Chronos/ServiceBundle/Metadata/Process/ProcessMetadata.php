@@ -36,7 +36,7 @@ class ProcessMetadata implements ProcessMetadataInterface
      *
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * Dispatcher
@@ -45,7 +45,7 @@ class ProcessMetadata implements ProcessMetadataInterface
      *
      * @var DispatcherMetadataInterface
      */
-    protected $dispatcher;
+    private $dispatcher;
 
     /**
      * Provider
@@ -54,7 +54,7 @@ class ProcessMetadata implements ProcessMetadataInterface
      *
      * @var ProviderMetadataInterface
      */
-    protected $provider;
+    private $provider;
 
     /**
      * Formatter
@@ -63,7 +63,7 @@ class ProcessMetadata implements ProcessMetadataInterface
      *
      * @var FormatterMetadataInterface
      */
-    protected $formatter;
+    private $formatter;
 
     /**
      * Controller
@@ -72,7 +72,7 @@ class ProcessMetadata implements ProcessMetadataInterface
      *
      * @var ControllerMetadataInterface
      */
-    protected $controller;
+    private $controller;
 
     /**
      * Construct

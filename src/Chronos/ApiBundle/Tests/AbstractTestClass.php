@@ -156,6 +156,11 @@ abstract class AbstractTestClass extends TestCase
      */
     protected function assertIsSetter(string $property, string $method, $value, $expected) : void
     {
+        $isSame = substr($property, 0, strlen('same:')) == 'same:';
+        if ($isSame) {
+            $property = substr($property, strlen('same:'));
+        }
+
         $propertyReflex = $this->getClassProperty($property);
         $instance = $this->getInstance();
 
@@ -168,11 +173,13 @@ abstract class AbstractTestClass extends TestCase
                 $this->getTestedClass()
             )
         );
-
         $this->assertSame($instance, $method->invoke($instance, $value));
+
+        if ($isSame) {
+            $this->assertSame($expected, $propertyReflex->getValue($instance));
+            return;
+        }
         $this->assertEquals($expected, $propertyReflex->getValue($instance));
-
-
         return;
     }
 
@@ -209,6 +216,11 @@ abstract class AbstractTestClass extends TestCase
      */
     protected function assertIsGetter(string $property, string $method, $value, $expected) : void
     {
+        $isSame = substr($property, 0, strlen('same:')) == 'same:';
+        if ($isSame) {
+            $property = substr($property, strlen('same:'));
+        }
+
         $propertyReflex = $this->getClassProperty($property);
 
         $instance = $this->getInstance();
@@ -224,8 +236,11 @@ abstract class AbstractTestClass extends TestCase
             )
         );
 
+        if ($isSame) {
+            $this->assertSame($expected, $method->invoke($instance));
+            return;
+        }
         $this->assertEquals($expected, $method->invoke($instance));
-
         return;
     }
 
