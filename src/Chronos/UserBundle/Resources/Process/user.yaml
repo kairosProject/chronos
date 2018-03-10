@@ -3,7 +3,7 @@ process:
         formatter:
             serializer:
                 converter:
-                    - {'roleEntities': 'roles'}
+                    'roleEntities': 'roles'
                 context: 
                     groups: ['user.id', 'user.username', 'user.roles', 'role.id']
             format: json
@@ -20,6 +20,6 @@ process:
                     - ['user.provider', 'provideDocuments', 10]
                     - ['user.formatter', 'format', 0]
         controller:
-            class: Chronos\UserBundle\Controller\SimpleUserController
+            service: UserController
             arguments:
                 - "@UserDispatcher"

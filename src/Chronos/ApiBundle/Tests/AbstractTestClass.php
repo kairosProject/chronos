@@ -6,7 +6,7 @@ declare(strict_types=1);
  * As each files provides by the CSCFA, this file is licensed
  * under the MIT license.
  *
- * PHP version 5.6
+ * PHP version 7.2
  *
  * @category Test
  * @package  Chronos
@@ -90,7 +90,7 @@ abstract class AbstractTestClass extends TestCase
      * @param string $method     The method name to reflex
      * @param bool   $accessible The accessibility state of the property
      *
-     * @return \ReflectionMethod
+     * @return \ReflectionMethod|null
      */
     protected function getClassMethod(string $method, bool $accessible = true) : ?\ReflectionMethod
     {

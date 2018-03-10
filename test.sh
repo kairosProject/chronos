@@ -1,7 +1,9 @@
 #! /usr/bin/env bash
 
 function usage {
-  echo "Usage: $0 [-p path/to/php] [-c path/to/composer] [-h]" 1>&2
+  echo "Usage: $0 [-p path/to/php] [-c path/to/composer] [-h] [-d] [-m]" 1>&2
+  echo "-d : development mode" 1>&2
+  echo "-m : no metrics mode" 1>&2
   exit 1
 }
 
@@ -9,8 +11,9 @@ PHP_PATH="/usr/bin/env php"
 COMPOSER_PATH="/usr/bin/env composer"
 
 INFECTION="vendor/bin/infection --threads=4 --min-msi=100 --log-verbosity=1"
+METRICS="vendor/bin/phpmetrics --report-html=doc/metrics --junit=doc/phpunit_logfile.xml ."
 
-while getopts ":p:c:h:d" opt; do
+while getopts "dmp:c:h:" opt; do
   case $opt in
     d)
       INFECTION="vendor/bin/infection --threads=4 --min-msi=100 --only-covered --log-verbosity=1"
@@ -24,6 +27,9 @@ while getopts ":p:c:h:d" opt; do
     h)
       usage
       exit 0
+      ;;
+    m)
+      METRICS=""
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -47,6 +53,7 @@ function runner {
 }
 
 function test {
+	echo -e "\e[43m\e[30mRunning $1\e[0m\n\e[49m"
     TEST_RES=`$1`
     local TEST_RET=$?
     
@@ -91,9 +98,11 @@ echo "$TEST_RES" > doc/phpmd.txt
 test "$PHP_PATH vendor/bin/phpcpd src/" PHPCPD 1
 echo "$TEST_RES" > doc/phpcpd.txt
 
-test "$PHP_PATH vendor/bin/phpmetrics --report-html=doc/metrics --junit=doc/phpunit_logfile.xml ." PHPMETRICS 1
-
-echo "$TEST_RES" > doc/phpmetrics.txt
+if [ -n "$METRICS" ]
+then
+	test "$PHP_PATH $METRICS" PHPMetrics 1
+	echo "$TEST_RES" > doc/phpmetrics.txt
+fi
 
 if [ "$STATUS" -eq 0 ]
 then

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * As each files provides by the CSCFA, this file is licensed
  * under the MIT license.
  *
- * PHP version 5.6
+ * PHP version 7.2
  *
  * @category Document
  * @package  Chronos
