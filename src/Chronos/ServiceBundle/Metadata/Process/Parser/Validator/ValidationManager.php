@@ -109,7 +109,11 @@ class ValidationManager implements ListenerValidatorInterface
      */
     public function getValidators() : array
     {
-        return (array)$this->validators;
+        $result = [];
+        foreach ($this->validators as $validator) {
+            array_push($result, $validator);
+        }
+        return $result;
     }
 
     /**

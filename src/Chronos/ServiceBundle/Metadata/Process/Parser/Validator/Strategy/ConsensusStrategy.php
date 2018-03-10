@@ -41,6 +41,10 @@ class ConsensusStrategy implements ValidationStrategyInterface
     public function isValid(array $validationResults)
     {
         $results = array_count_values(array_map('intval', $validationResults));
-        return $results[1] > $results[0];
+        if (!isset($results[0])) {
+            return true;
+        }
+
+        return isset($results[1]) && $results[1] > $results[0];
     }
 }

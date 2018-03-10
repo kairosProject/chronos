@@ -43,13 +43,11 @@ class FormatHandlerTest extends AbstractTestClass
      */
     public function testConstruct()
     {
-        $validationManager = $this->createMock(ValidationManager::class);
-
-        $instance = new FormatHandler($validationManager);
-
-        $manager = $this->getClassProperty('listenerValidator')->getValue($instance);
-
-        $this->assertSame($validationManager, $manager);
+        $this->assertConstructor(
+            [
+                'same:listenerValidator' => $this->createMock(ValidationManager::class)
+            ]
+        );
     }
 
     /**
