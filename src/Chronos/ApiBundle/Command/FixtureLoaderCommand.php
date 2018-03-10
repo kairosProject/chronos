@@ -20,7 +20,6 @@ use Symfony\Component\Console\Command\Command;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Config\FileLocator;
-use Doctrine\Common\DataFixtures\Purger\MongoDBPurger;
 use Doctrine\Common\DataFixtures\Executor\MongoDBExecutor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
