@@ -74,4 +74,3 @@ class CallableListenerValidatorTest extends AbstractPriorityValidatorTest
         return CallableListenerValidator::class;
     }
 }
-

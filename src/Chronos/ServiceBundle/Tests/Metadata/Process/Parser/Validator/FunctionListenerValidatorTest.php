@@ -33,34 +33,58 @@ use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ListenerValidatorInt
 class FunctionListenerValidatorTest extends AbstractPriorityValidatorTest
 {
     /**
+     * Validation provider
+     *
+     * Return a set of data to validate the validation
+     *
+     * @return array
+     */
+    public function validationProvider()
+    {
+        return [
+            [[static::class, 'testIsValid', 12], [12], false],
+            [[static::class, 'testIsValid'], [], false],
+            [[static::class], [], false],
+            [[], [], false],
+            [[12], [], false],
+            [['string'], [], false],
+            [['is_int', 12], [12], true],
+            [['array_map'], [], true],
+            [[static::class, 'fakeMethod'], [], false]
+        ];
+    }
+
+    /**
      * Test isValid
      *
      * Validate the Chronos\ServiceBundle\Metadata\Process\Parser\Validator\FunctionListenerValidator::isValid
      * method
      *
-     * @return void
+     * @param array $inputArguments   The isValid input arguments
+     * @param array $priorityArgument The priority validator arguments
+     * @param bool  $isValid          The validation expected result
+     *
+     * @return       void
+     * @dataProvider validationProvider
      */
-    public function testIsValid()
+    public function testIsValid(array $inputArguments, array $priorityArgument, bool $isValid)
     {
         $instance = $this->getInstance();
 
         $priorityValidator = $this->createMock(ListenerValidatorInterface::class);
-        $priorityValidator->expects($this->exactly(2))
+        $priorityValidator->expects($this->exactly((int)$isValid))
             ->method('isValid')
-            ->withConsecutive($this->equalTo([12]), $this->equalTo([]))
-            ->willReturn(true);
+            ->with($this->identicalTo($priorityArgument))
+            ->willReturn($isValid);
 
         $this->getClassProperty('priorityValidator')->setValue($instance, $priorityValidator);
 
-        $this->assertFalse($instance->isValid([static::class, 'testIsValid', 12]));
-        $this->assertFalse($instance->isValid([static::class, 'testIsValid']));
-        $this->assertFalse($instance->isValid([static::class]));
-        $this->assertFalse($instance->isValid([]));
-        $this->assertFalse($instance->isValid([12]));
-        $this->assertFalse($instance->isValid(['string']));
-        $this->assertTrue($instance->isValid(['is_int', 12]));
-        $this->assertTrue($instance->isValid(['array_map']));
-        $this->assertFalse($instance->isValid([static::class, 'fakeMethod']));
+        if ($isValid) {
+            $this->assertTrue($instance->isValid($inputArguments));
+            return;
+        }
+
+        $this->assertFalse($instance->isValid($inputArguments));
     }
 
     /**
@@ -75,4 +99,3 @@ class FunctionListenerValidatorTest extends AbstractPriorityValidatorTest
         return FunctionListenerValidator::class;
     }
 }
-

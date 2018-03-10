@@ -64,4 +64,3 @@ class PriorityValidatorTest extends AbstractTestClass
         return PriorityValidator::class;
     }
 }
-

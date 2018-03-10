@@ -129,9 +129,9 @@ class ServiceListenerValidator implements ListenerValidatorInterface
      *
      * @return bool
      */
-    public function isValid(array $listener)
+    public function isValid(array $listener) : bool
     {
-        if (isset($listener[0]) && !$this->container->hasDefinition($listener[0])) {
+        if (isset($listener[0]) && $this->container->hasDefinition($listener[0])) {
             $class = $this->container->getDefinition($listener[0])->getClass();
 
             return $this->callValidator->isValid(array_replace($listener, [$class]));

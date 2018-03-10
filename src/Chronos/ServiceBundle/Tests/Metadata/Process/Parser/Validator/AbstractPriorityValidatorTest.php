@@ -40,16 +40,12 @@ abstract class AbstractPriorityValidatorTest extends AbstractTestClass
      *
      * @return void
      */
-    public function testConstruct() : void
+    public function testConstructor() : void
     {
-        $priorityValidator = $this->createMock(ListenerValidatorInterface::class);
-
-        $class = $this->getTestedClass();
-        $instance = new $class($priorityValidator);
-
-        $this->assertSame(
-            $priorityValidator,
-            $this->getClassProperty('priorityValidator')->getValue($instance)
+        $this->assertConstructor(
+            [
+                'same:priorityValidator' => $this->createMock(ListenerValidatorInterface::class)
+            ]
         );
     }
 

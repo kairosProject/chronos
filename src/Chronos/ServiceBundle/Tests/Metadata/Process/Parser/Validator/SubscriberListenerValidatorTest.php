@@ -69,4 +69,3 @@ class SubscriberListenerValidatorTest extends AbstractTestClass
         return SubscriberListenerValidator::class;
     }
 }
-
