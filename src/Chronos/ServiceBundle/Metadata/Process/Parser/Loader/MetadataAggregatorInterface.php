@@ -14,14 +14,12 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Chronos\ServiceBundle\Metadata\Process\Parser;
-
-use Chronos\ServiceBundle\Metadata\Process\ProcessMetadataInterface;
+namespace Chronos\ServiceBundle\Metadata\Process\Parser\Loader;
 
 /**
- * Process metadata parser interface
+ * Metadata aggregator interface
  *
- * This interface is used to define the base methods of the metadata parser
+ * This interface is used to define the base methods of the metadata aggregator
  *
  * @category Metadata
  * @package  Chronos
@@ -29,16 +27,16 @@ use Chronos\ServiceBundle\Metadata\Process\ProcessMetadataInterface;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-interface ProcessMetadataParserInterface
+interface MetadataAggregatorInterface
 {
     /**
-     * Parse
+     * Add metadata
      *
-     * Parse the given data and convert to ProcessMetadataInterface
+     * Store a new metadata resolution
      *
-     * @param mixed $data The data to parse
+     * @param mixed $data The data resolution for metadata
      *
-     * @return ProcessMetadataInterface
+     * @return MetadataAggregatorInterface
      */
-    public function parse($data) : ProcessMetadataInterface;
+    public function addMetadata($data) : MetadataAggregatorInterface;
 }

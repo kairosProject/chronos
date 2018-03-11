@@ -14,14 +14,12 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Chronos\ServiceBundle\Metadata\Process\Parser;
-
-use Chronos\ServiceBundle\Metadata\Process\ProcessMetadataInterface;
+namespace Chronos\ServiceBundle\Metadata\Process\Parser\Loader;
 
 /**
- * Process metadata parser interface
+ * Metadata support interface
  *
- * This interface is used to define the base methods of the metadata parser
+ * This interface is used to define the base methods of the metadata supporter
  *
  * @category Metadata
  * @package  Chronos
@@ -29,16 +27,16 @@ use Chronos\ServiceBundle\Metadata\Process\ProcessMetadataInterface;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-interface ProcessMetadataParserInterface
+interface MetadataSupportInterface
 {
     /**
-     * Parse
+     * Support
      *
-     * Parse the given data and convert to ProcessMetadataInterface
+     * Indicate if the instance support the given metadata
      *
-     * @param mixed $data The data to parse
+     * @param mixed $data The data to be supported
      *
-     * @return ProcessMetadataInterface
+     * @return bool
      */
-    public function parse($data) : ProcessMetadataInterface;
+    public function support($data) : bool;
 }
