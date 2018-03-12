@@ -34,7 +34,7 @@
     
     <rule ref="rulesets/cleancode.xml/StaticAccess">
        <properties>
-           <property name="exceptions" value="Closure" />
+           <property name="exceptions" value="Closure,Mockery,org\bovigo\vfs\vfsStream" />
        </properties>
     </rule>
 

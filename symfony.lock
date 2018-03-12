@@ -59,6 +59,9 @@
     "infection/infection": {
         "version": "0.7.1"
     },
+    "mikey179/vfsstream": {
+        "version": "v1.6.5"
+    },
     "mockery/mockery": {
         "version": "1.0"
     },

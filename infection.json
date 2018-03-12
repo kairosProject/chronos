@@ -7,7 +7,9 @@
         	"Chronos/ApiBundle/Tests",
         	"Chronos/RoleBundle/Tests",
         	"Chronos/UserBundle/Tests",
-        	"Tests"
+        	"Tests",
+        	"Chronos/ServiceBundle/Tests",
+        	"Chronos/ServiceBundle/Metadata/Process/Parser/Loader/MetadataAggregatorTrait.php"
         ]
     },
     "timeout": 10,

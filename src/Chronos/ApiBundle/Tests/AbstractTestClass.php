@@ -276,6 +276,48 @@ abstract class AbstractTestClass extends TestCase
     }
 
     /**
+     * Assert public method
+     *
+     * Assert a method to be public in current tested class
+     *
+     * @param string $methodName The method name
+     *
+     * @return void
+     */
+    protected function assertPublicMethod(string $methodName) : void
+    {
+        $this->assertTrue($this->getClassMethod($methodName)->isPublic());
+    }
+
+    /**
+     * Assert protected method
+     *
+     * Assert a method to be protected in current tested class
+     *
+     * @param string $methodName The method name
+     *
+     * @return void
+     */
+    protected function assertProtectedMethod(string $methodName) : void
+    {
+        $this->assertTrue($this->getClassMethod($methodName)->isProtected());
+    }
+
+    /**
+     * Assert private method
+     *
+     * Assert a method to be private in current tested class
+     *
+     * @param string $methodName The method name
+     *
+     * @return void
+     */
+    protected function assertPrivateMethod(string $methodName) : void
+    {
+        $this->assertTrue($this->getClassMethod($methodName)->isPrivate());
+    }
+
+    /**
      * Create method reflection
      *
      * Return a reflection method, according to the instance class name and mathod. Abble to follow the
