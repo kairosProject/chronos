@@ -44,9 +44,9 @@ class SerializerMetadataBuilderTest extends AbstractTestClass
     public function testConstruct()
     {
         $resolver = $this->createMock(OptionsResolver::class);
-        $resolver->expects($this->once())
-            ->method('setRequired')
-            ->with($this->equalTo(['context', 'converter']));
+        $resolver->expects($this->exactly(2))
+            ->method('setDefault')
+            ->withConsecutive($this->equalTo('context'), $this->equalTo('converter'));
 
 
         $resolver->expects($this->exactly(2))
@@ -93,6 +93,31 @@ class SerializerMetadataBuilderTest extends AbstractTestClass
         $this->assertInstanceOf(SerializerMetadataInterface::class, $result);
         $this->assertEquals($data['context'], $result->getContext());
         $this->assertEquals($data['converter'], $result->getConverterMap());
+    }
+
+    /**
+     * Test buildFromData
+     *
+     * Validate the Chronos\ServiceBundle\Metadata\Process\Parser\Builder\ControllerMetadataBuilder::buildFromData
+     * method in case of empty given data
+     *
+     * @return void
+     */
+    public function testEmptyBuild()
+    {
+        $instance = $this->getInstance();
+
+        $resolver = $this->createMock(OptionsResolver::class);
+        $resolver->expects($this->once())
+            ->method('resolve')
+            ->with($this->equalTo([]))
+            ->willReturn(['context' => [], 'converter' => []]);
+        $this->getClassProperty('resolver')->setValue($instance, $resolver);
+
+        $result = $instance->buildFromData([]);
+        $this->assertInstanceOf(SerializerMetadataInterface::class, $result);
+        $this->assertEquals([], $result->getContext());
+        $this->assertEquals([], $result->getConverterMap());
     }
 
     /**

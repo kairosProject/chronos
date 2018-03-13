@@ -67,7 +67,8 @@ class SerializerMetadataBuilder extends AbstractMetadataBuilder
      */
     protected function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setRequired(['context', 'converter']);
+        $resolver->setDefault('context', []);
+        $resolver->setDefault('converter', []);
 
         $resolver->setAllowedTypes('context', 'array');
         $resolver->setAllowedTypes('converter', 'array');
