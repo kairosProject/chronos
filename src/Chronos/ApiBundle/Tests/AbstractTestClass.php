@@ -318,6 +318,34 @@ abstract class AbstractTestClass extends TestCase
     }
 
     /**
+     * Create property reflection
+     *
+     * Return a reflection property, according to the instance class name and property. Abble to follow the
+     * inheritance tree to find the property.
+     *
+     * @param string $instanceClassName The base instance class name
+     * @param string $property          The property name to find
+     *
+     * @return \ReflectionProperty|NULL
+     */
+    protected function createPropertyReflection(string $instanceClassName, string $property) : ?\ReflectionProperty
+    {
+        $reflectionClass = new \ReflectionClass($instanceClassName);
+
+        if ($reflectionClass->hasProperty($property)) {
+            $propertyReflection = $reflectionClass->getProperty($property);
+            return $propertyReflection;
+        }
+
+        $parentClass = $reflectionClass->getParentClass();
+        if (!$parentClass) {
+            return null;
+        }
+
+        return $this->createPropertyReflection($parentClass->getName(), $property);
+    }
+
+    /**
      * Create method reflection
      *
      * Return a reflection method, according to the instance class name and mathod. Abble to follow the
@@ -343,34 +371,6 @@ abstract class AbstractTestClass extends TestCase
         }
 
         return $this->createMethodReflection($parentClass->getName(), $method);
-    }
-
-    /**
-     * Create property reflection
-     *
-     * Return a reflection property, according to the instance class name and property. Abble to follow the
-     * inheritance tree to find the property.
-     *
-     * @param string $instanceClassName The base instance class name
-     * @param string $property          The property name to find
-     *
-     * @return \ReflectionProperty|NULL
-     */
-    private function createPropertyReflection(string $instanceClassName, string $property) : ?\ReflectionProperty
-    {
-        $reflectionClass = new \ReflectionClass($instanceClassName);
-
-        if ($reflectionClass->hasProperty($property)) {
-            $propertyReflection = $reflectionClass->getProperty($property);
-            return $propertyReflection;
-        }
-
-        $parentClass = $reflectionClass->getParentClass();
-        if (!$parentClass) {
-            return null;
-        }
-
-        return $this->createPropertyReflection($parentClass->getName(), $property);
     }
 
     /**
