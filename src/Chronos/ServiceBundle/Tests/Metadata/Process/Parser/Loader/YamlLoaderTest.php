@@ -60,6 +60,17 @@ class YamlLoaderTest extends MetadataAggregatorTestClass
             [
                 'same:loader' => $this->createMock(PHPLoader::class),
                 'same:yaml' => $this->createMock(Yaml::class)
+            ],
+            [
+                'yamlFlags' => 0
+            ]
+        );
+
+        $this->assertConstructor(
+            [
+                'same:loader' => $this->createMock(PHPLoader::class),
+                'same:yaml' => $this->createMock(Yaml::class),
+                'yamlFlags' => 10
             ]
         );
     }
@@ -79,8 +90,8 @@ class YamlLoaderTest extends MetadataAggregatorTestClass
         $data = ['file1.yaml', 'file2.yaml'];
 
         $yaml = \Mockery::mock(sprintf('overload:%s', Yaml::class));
-        $yaml->expects()->parseFile('file1.yaml')->andReturn(['process'=>[1]]);
-        $yaml->expects()->parseFile('file2.yaml')->andReturn(['process'=>[2]]);
+        $yaml->expects()->parseFile('file1.yaml', 0)->andReturn(['process'=>[1]]);
+        $yaml->expects()->parseFile('file2.yaml', 0)->andReturn(['process'=>[2]]);
 
         $consecutive = [
             [$this->equalTo(['process'=>[1]])],
@@ -89,7 +100,7 @@ class YamlLoaderTest extends MetadataAggregatorTestClass
         $loader = $this->createMock(PHPLoader::class);
 
         if ($inData) {
-            $yaml->expects()->parseFile($inData)->andReturn(['process'=>[$inData]]);
+            $yaml->expects()->parseFile($inData, 0)->andReturn(['process'=>[$inData]]);
             $consecutive[] = [$this->equalTo(['process'=>[$inData]])];
 
             $loader->expects($this->once())
@@ -199,11 +210,11 @@ class YamlLoaderTest extends MetadataAggregatorTestClass
         $this->getClassProperty('loader')->setValue($instance, $loader);
 
         if ($metadata == $this->root->url().'/file4.yaml') {
-            $yaml->expects()->parseFile($metadata)->andThrow(new ParseException('Empty message'));
+            $yaml->expects()->parseFile($metadata, 0)->andThrow(new ParseException('Empty message'));
             return;
         }
 
-        $yaml->expects()->parseFile($metadata)->andReturn(['process' => $metadata]);
+        $yaml->expects()->parseFile($metadata, 0)->andReturn(['process' => $metadata]);
 
         $loader->expects($this->once())
             ->method('support')
@@ -229,7 +240,7 @@ class YamlLoaderTest extends MetadataAggregatorTestClass
         $metadata = $this->root->url().'/'.$metadata;
 
         $yaml = \Mockery::mock(sprintf('overload:%s', Yaml::class));
-        $yaml->expects()->parseFile($metadata)->andReturn(['process' => $metadata]);
+        $yaml->expects()->parseFile($metadata, 0)->andReturn(['process' => $metadata]);
 
         $loader = $this->createMock(PHPLoader::class);
 

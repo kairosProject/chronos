@@ -53,19 +53,30 @@ class YamlLoader implements MetadataLoaderInterface, MetadataAggregatorInterface
     private $loader;
 
     /**
+     * Yaml flags
+     *
+     * The flags to be used during yaml parsing
+     *
+     * @var int
+     */
+    private $yamlFlags = 0;
+
+    /**
      * Construct
      *
      * The default YamlLoader constructor
      *
-     * @param PHPLoader $loader A native PHP metadata loader
-     * @param Yaml      $yaml   A YAML file parser
+     * @param PHPLoader $loader    A native PHP metadata loader
+     * @param Yaml      $yaml      A YAML file parser
+     * @param int       $yamlFlags The flags to be used during yaml parsing
      *
      * @return void
      */
-    public function __construct(PHPLoader $loader, Yaml $yaml)
+    public function __construct(PHPLoader $loader, Yaml $yaml, int $yamlFlags = 0)
     {
         $this->loader = $loader;
         $this->yaml = $yaml;
+        $this->yamlFlags = $yamlFlags;
     }
 
     /**
@@ -104,7 +115,7 @@ class YamlLoader implements MetadataLoaderInterface, MetadataAggregatorInterface
     {
         if (is_string($data) && file_exists($data)) {
             try {
-                return $this->loader->support($this->yaml->parseFile($data));
+                return $this->loader->support($this->yaml->parseFile($data, $this->yamlFlags));
             } catch (ParseException $e) {
                 return false;
             }
@@ -123,7 +134,7 @@ class YamlLoader implements MetadataLoaderInterface, MetadataAggregatorInterface
     private function loadFileContents()
     {
         foreach ($this->data as $filename) {
-            yield $this->yaml->parseFile($filename);
+            yield $this->yaml->parseFile($filename, $this->yamlFlags);
         }
     }
 }
