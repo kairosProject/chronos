@@ -80,15 +80,15 @@ class DispatcherServiceBuilder implements DispatcherServiceBuilderInterface
      * The default DispatcherServiceBuilder constructor
      *
      * @param ClassDefinerInterface        $definer             The class instanciation definer
-     * @param string                       $serviceName         The service name
      * @param EventServiceBuilderInterface $eventServiceBuilder The event service builder
+     * @param string                       $serviceName         The service name
      *
      * @return void
      */
     public function __construct(
         ClassDefinerInterface $definer,
-        string $serviceName = self::SERVICE_NAME,
-        EventServiceBuilderInterface $eventServiceBuilder
+        EventServiceBuilderInterface $eventServiceBuilder,
+        string $serviceName = self::SERVICE_NAME
     ) {
         $this->classDefiner = $definer;
         $this->serviceName = $serviceName;
@@ -113,7 +113,6 @@ class DispatcherServiceBuilder implements DispatcherServiceBuilderInterface
         string $processName,
         ProcessBuilderBagInterface $processBag
     ) : void {
-
         $definition = new Definition(
             $this->classDefiner->getClassName(),
             $this->classDefiner->getConstructorArguments()
@@ -124,7 +123,7 @@ class DispatcherServiceBuilder implements DispatcherServiceBuilderInterface
         $container->setDefinition($serviceName, $definition);
 
         foreach ($metadata->getEvents() as $eventMetadata) {
-            $this->eventServiceBuilder->buildProcessServices($container, $eventMetadata, $processName, $processBag);
+            $this->eventServiceBuilder->buildProcessServices($container, $eventMetadata, $processBag);
         }
     }
 }

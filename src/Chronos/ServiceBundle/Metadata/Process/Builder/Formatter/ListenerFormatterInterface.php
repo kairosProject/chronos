@@ -14,12 +14,12 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Chronos\ServiceBundle\Metadata\Process\Builder\Bag;
+namespace Chronos\ServiceBundle\Metadata\Process\Builder\Formatter;
 
 /**
- * Process builder bag interface
+ * ListenerFormater interface
  *
- * This interface is used to define the process builder bag methods
+ * This interface define the base Listener Formatter methods
  *
  * @category Metadata
  * @package  Chronos
@@ -27,25 +27,27 @@ namespace Chronos\ServiceBundle\Metadata\Process\Builder\Bag;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-interface ProcessBuilderBagInterface
+interface ListenerFormatterInterface
 {
     /**
-     * Set dispatcher service name
+     * Format
      *
-     * Store the dispatcher definition service name
+     * Format and return the given listener
      *
-     * @param string $serviceName The dispatcher service definition name
+     * @param mixed $listener The listener to format
      *
-     * @return void
+     * @return mixed
      */
-    public function setDispatcherServiceName(string $serviceName) : void;
+    public function format($listener);
 
     /**
-     * Get dispatcher service name
+     * Support
      *
-     * Return the defined dispatcher service name or null if not defined
+     * Define if the current formater support the given listener
      *
-     * @return string|NULL
+     * @param mixed $listener The listener to format
+     *
+     * @return bool
      */
-    public function getDispatcherServiceName() : ?string;
+    public function support($listener) : bool;
 }
