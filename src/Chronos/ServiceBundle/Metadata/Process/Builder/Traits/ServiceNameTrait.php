@@ -37,7 +37,7 @@ trait ServiceNameTrait
      *
      * @var string
      */
-    private $serviceName;
+    protected $serviceName;
 
     /**
      * Build service name

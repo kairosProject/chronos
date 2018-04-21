@@ -56,16 +56,6 @@ class DispatcherServiceBuilder implements DispatcherServiceBuilderInterface
     private $classDefiner;
 
     /**
-     * Service name
-     *
-     * The service name. This value is used at definition registration time, concatenated to process name to define
-     * service full name
-     *
-     * @var string
-     */
-    private $serviceName = self::SERVICE_NAME;
-
-    /**
      * Event service builder
      *
      * The event service builder to be used to create event definition
