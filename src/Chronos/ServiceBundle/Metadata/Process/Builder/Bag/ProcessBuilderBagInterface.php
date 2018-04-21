@@ -48,4 +48,24 @@ interface ProcessBuilderBagInterface
      * @return string|NULL
      */
     public function getDispatcherServiceName() : ?string;
+
+    /**
+     * Set serializer service name
+     *
+     * Store the serializer definition service name
+     *
+     * @param string $serviceName The serializer service name
+     *
+     * @return void
+     */
+    public function setSerializerServiceName(string $serviceName) : void;
+
+    /**
+     * Get serializer service name
+     *
+     * Return the defined serializer service name or null if not defined
+     *
+     * @return string|NULL
+     */
+    public function getSerializerServiceName() : ?string;
 }
