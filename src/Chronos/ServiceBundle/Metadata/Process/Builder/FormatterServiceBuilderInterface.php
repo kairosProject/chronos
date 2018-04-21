@@ -16,14 +16,14 @@ declare(strict_types=1);
  */
 namespace Chronos\ServiceBundle\Metadata\Process\Builder;
 
-use Chronos\ServiceBundle\Metadata\Process\SerializerMetadataInterface;
-use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Chronos\ServiceBundle\Metadata\Process\FormatterMetadataInterface;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 
 /**
- * Serializer service builder interface
+ * Formatter service builder interface
  *
- * This interface is used to define the base SerializerServiceBuilder methods
+ * This interface is used to define the base FormatterServiceBuilder methods
  *
  * @category Metadata
  * @package  Chronos
@@ -31,22 +31,22 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-interface SerializerServiceBuilderInterface
+interface FormatterServiceBuilderInterface
 {
     /**
      * Build process service
      *
      * Inject services according to metadata into the container
      *
-     * @param ContainerBuilder            $container  The application container builder
-     * @param SerializerMetadataInterface $metadata   The serializer metadata
-     * @param ProcessBuilderBagInterface  $processBag A process builder bag
+     * @param ContainerBuilder           $container  The application container builder
+     * @param FormatterMetadataInterface $metadata   The formatter metadata
+     * @param ProcessBuilderBagInterface $processBag A process builder bag
      *
      * @return void
      */
     public function buildProcessServices(
         ContainerBuilder $container,
-        SerializerMetadataInterface $metadata,
+        FormatterMetadataInterface $metadata,
         ProcessBuilderBagInterface $processBag
     ) : void;
 }
