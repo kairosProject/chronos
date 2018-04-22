@@ -84,6 +84,8 @@ class SerializerServiceBuilder implements SerializerServiceBuilderInterface
      * @param string $abstractNormalizerId The abstract normalizer service id to be extended
      * @param string $abstractSerializerId The abstract serializer service id to be extended
      * @param string $defaultSerializerId  The default serializer service id to be used in case of uneeded extend
+     *
+     * @return void
      */
     public function __construct(
         string $serviceName,

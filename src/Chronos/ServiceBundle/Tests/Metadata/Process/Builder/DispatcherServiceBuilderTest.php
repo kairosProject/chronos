@@ -54,7 +54,7 @@ class DispatcherServiceBuilderTest extends AbstractTestClass
                 'same:eventServiceBuilder' => $this->createMock(EventServiceBuilderInterface::class)
             ],
             [
-                'serviceName' => 'process_dispatcher'
+                'serviceName' => 'dispatcher'
             ]
         );
 
@@ -123,7 +123,7 @@ class DispatcherServiceBuilderTest extends AbstractTestClass
 
         $this->getClassProperty('classDefiner')->setValue($instance, $classDefiner);
         $this->getClassProperty('eventServiceBuilder')->setValue($instance, $eventServiceBuilder);
-        $this->getClassProperty('serviceName')->setValue($instance, 'process_dispatcher');
+        $this->getClassProperty('serviceName')->setValue($instance, 'dispatcher');
 
         $classDefiner->expects($this->once())
             ->method('getClassName')
@@ -135,12 +135,12 @@ class DispatcherServiceBuilderTest extends AbstractTestClass
 
         $processBag->expects($this->once())
             ->method('setDispatcherServiceName')
-            ->with($this->equalTo('TEST_NAME_process_dispatcher'));
+            ->with($this->equalTo('TEST_NAME_dispatcher'));
 
         $container->expects($this->once())
             ->method('setDefinition')
             ->with(
-                $this->equalTo('TEST_NAME_process_dispatcher'),
+                $this->equalTo('TEST_NAME_dispatcher'),
                 $this->equalTo(new Definition(\stdClass::class, []))
             );
 

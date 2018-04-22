@@ -17,9 +17,9 @@ process:
             - 
                 event: !php/const Chronos\ApiBundle\Event\ApiControllerEventInterface::EVENT_GET_MULTIPLE
                 listeners:
-                    - ['user.provider', 'provideDocuments', 10]
-                    - ['user.formatter', 'format', 0]
+                    - ['@user_provider', 'provideDocuments', 10]
+                    - ['@user_formatter', 'format', 0]
         controller:
             service: UserController
             arguments:
-                - "@UserDispatcher"
+                - "@user_dispatcher"

@@ -44,7 +44,7 @@ class DispatcherServiceBuilder implements DispatcherServiceBuilderInterface
      *
      * @var string
      */
-    private const SERVICE_NAME = 'process_dispatcher';
+    private const SERVICE_NAME = 'dispatcher';
 
     /**
      * Class definer
