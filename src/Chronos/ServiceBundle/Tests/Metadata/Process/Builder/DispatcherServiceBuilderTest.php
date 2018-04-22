@@ -103,8 +103,11 @@ class DispatcherServiceBuilderTest extends AbstractTestClass
 
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(DispatcherMetadataInterface::class);
-        $processName = 'TEST_NAME';
         $processBag = $this->createMock(ProcessBuilderBagInterface::class);
+
+        $processBag->expects($this->once())
+            ->method('getProcessName')
+            ->willReturn('TEST_NAME');
 
         $classDefiner = $this->createMock(ClassDefinerInterface::class);
         $eventServiceBuilder = $this->createMock(EventServiceBuilderInterface::class);
@@ -148,7 +151,7 @@ class DispatcherServiceBuilderTest extends AbstractTestClass
             ->method('getEvents')
             ->willReturn($metadatas);
 
-        $instance->buildProcessServices($container, $metadata, $processName, $processBag);
+        $instance->buildProcessServices($container, $metadata, $processBag);
     }
 
     /**

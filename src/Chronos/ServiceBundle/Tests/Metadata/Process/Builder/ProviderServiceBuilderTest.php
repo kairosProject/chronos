@@ -21,6 +21,7 @@ use Chronos\ServiceBundle\Metadata\Process\Builder\ProviderServiceBuilder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Chronos\ServiceBundle\Metadata\Process\ProviderMetadataInterface;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * ProviderServiceBuilder test
@@ -45,6 +46,7 @@ class ProviderServiceBuilderTest extends AbstractTestClass
     public function testConstruct()
     {
         $this->assertConstructor(['serviceName' => 'name']);
+        $this->assertConstructor([], ['serviceName' => 'provider']);
     }
 
     /**
@@ -60,8 +62,13 @@ class ProviderServiceBuilderTest extends AbstractTestClass
 
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(ProviderMetadataInterface::class);
+        $processBag = $this->createMock(ProcessBuilderBagInterface::class);
 
-        $this->getClassProperty('serviceName')->setValue($instance, 'name');
+        $processBag->expects($this->once())
+            ->method('getProcessName')
+            ->willReturn('name');
+
+        $this->getClassProperty('serviceName')->setValue($instance, 'provider');
 
         $metadata->expects($this->once())
             ->method('getFactory')
@@ -70,7 +77,20 @@ class ProviderServiceBuilderTest extends AbstractTestClass
             ->method('getEntity')
             ->willReturn('entity:name');
 
-        $instance->buildProcessServices($container, $metadata);
+        $container->expects($this->exactly(2))
+            ->method('setDefinition')
+            ->withConsecutive(
+                [
+                    $this->equalTo('name_repository_provider'),
+                    $this->isInstanceOf(Definition::class)
+                ],
+                [
+                    $this->equalTo('name_provider'),
+                    $this->isInstanceOf(Definition::class)
+                ]
+            );
+
+            $instance->buildProcessServices($container, $metadata, $processBag);
     }
 
     /**

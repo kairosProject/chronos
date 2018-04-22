@@ -20,6 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Chronos\ServiceBundle\Metadata\Process\ControllerMetadataInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Traits\ServiceNameTrait;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 
 /**
  * Controller service builder
@@ -37,6 +38,15 @@ class ControllerServiceBuilder implements ControllerServiceBuilderInterface
     use ServiceNameTrait;
 
     /**
+     * Service name
+     *
+     * The default service name to be used at definition registration time
+     *
+     * @var string
+     */
+    private const SERVICE_NAME = 'controller';
+
+    /**
      * Construct
      *
      * The default ControllerServiceBuilder constructor
@@ -45,7 +55,7 @@ class ControllerServiceBuilder implements ControllerServiceBuilderInterface
      *
      * @return void
      */
-    public function __construct(string $serviceName)
+    public function __construct(string $serviceName = self::SERVICE_NAME)
     {
             $this->serviceName = $serviceName;
     }
@@ -55,16 +65,18 @@ class ControllerServiceBuilder implements ControllerServiceBuilderInterface
      *
      * Inject services according to metadata into the container
      *
-     * @param ContainerBuilder            $container The application container builder
-     * @param ControllerMetadataInterface $metadata  The dispatcher metadata
+     * @param ContainerBuilder            $container  The application container builder
+     * @param ControllerMetadataInterface $metadata   The dispatcher metadata
+     * @param ProcessBuilderBagInterface  $processBag A process builder bag
      *
      * @return void
      */
     public function buildProcessServices(
         ContainerBuilder $container,
-        ControllerMetadataInterface $metadata
+        ControllerMetadataInterface $metadata,
+        ProcessBuilderBagInterface $processBag
     ) : void {
-        $controller = $this->getController($container, $metadata->getClass());
+        $controller = $this->getController($container, $metadata->getClass(), $processBag);
 
         $controller->setArguments($metadata->getArguments());
     }
@@ -74,18 +86,22 @@ class ControllerServiceBuilder implements ControllerServiceBuilderInterface
      *
      * Return the metadata controller definition
      *
-     * @param ContainerBuilder $container  The application container builder
-     * @param string           $controller The controller class
+     * @param ContainerBuilder           $container  The application container builder
+     * @param string                     $controller The controller class
+     * @param ProcessBuilderBagInterface $processBag A process builder bag
      *
      * @return Definition
      */
-    private function getController(ContainerBuilder $container, string $controller) : Definition
-    {
+    private function getController(
+        ContainerBuilder $container,
+        string $controller,
+        ProcessBuilderBagInterface $processBag
+    ) : Definition {
         if ($container->hasDefinition($controller)) {
             return $container->getDefinition($controller);
         }
 
-        return $this->getControllerInstance($container, $controller);
+        return $this->getControllerInstance($container, $controller, $processBag);
     }
 
     /**
@@ -93,17 +109,21 @@ class ControllerServiceBuilder implements ControllerServiceBuilderInterface
      *
      * Create a definition on the fly, accordingly with the defined metadata class if exist, or throw exception
      *
-     * @param ContainerBuilder $container  The application container builder
-     * @param string           $controller The controller class
+     * @param ContainerBuilder           $container  The application container builder
+     * @param string                     $controller The controller class
+     * @param ProcessBuilderBagInterface $processBag A process builder bag
      *
      * @throws \InvalidArgumentException In case of unexisting class
      * @return Definition
      */
-    private function getControllerInstance(ContainerBuilder $container, string $controller) : Definition
-    {
+    private function getControllerInstance(
+        ContainerBuilder $container,
+        string $controller,
+        ProcessBuilderBagInterface $processBag
+    ) : Definition {
         if (class_exists($controller)) {
             $definition = new Definition($controller);
-            $container->setDefinition($this->buildServiceName('controller'), $definition);
+            $container->setDefinition($this->buildServiceName($processBag->getProcessName()), $definition);
 
             return $definition;
         }

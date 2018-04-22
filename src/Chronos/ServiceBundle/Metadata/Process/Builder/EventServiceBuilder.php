@@ -35,9 +35,6 @@ use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ListenerValidatorInt
  */
 class EventServiceBuilder implements EventServiceBuilderInterface
 {
-
-    use ServiceNameTrait;
-
     /**
      * Listener validator
      *

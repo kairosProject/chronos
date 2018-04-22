@@ -38,17 +38,15 @@ interface DispatcherServiceBuilderInterface
      *
      * Inject services according to metadata into the container
      *
-     * @param ContainerBuilder            $container   The application container builder
-     * @param DispatcherMetadataInterface $metadata    The dispatcher metadata
-     * @param string                      $processName The current process name
-     * @param ProcessBuilderBagInterface  $processBag  A process builder bag
+     * @param ContainerBuilder            $container  The application container builder
+     * @param DispatcherMetadataInterface $metadata   The dispatcher metadata
+     * @param ProcessBuilderBagInterface  $processBag A process builder bag
      *
      * @return void
      */
     public function buildProcessServices(
         ContainerBuilder $container,
         DispatcherMetadataInterface $metadata,
-        string $processName,
         ProcessBuilderBagInterface $processBag
     ) : void;
 }

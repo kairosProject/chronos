@@ -21,6 +21,7 @@ use Chronos\ServiceBundle\Metadata\Process\Builder\ControllerServiceBuilder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Chronos\ServiceBundle\Metadata\Process\ControllerMetadataInterface;
 use Symfony\Component\DependencyInjection\Definition;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 
 /**
  * ControllerServiceBuilder test
@@ -45,6 +46,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
     public function testConstruct()
     {
         $this->assertConstructor(['serviceName' => 'name']);
+        $this->assertConstructor([], ['serviceName' => 'controller']);
     }
 
     /**
@@ -74,6 +76,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
 
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(ControllerMetadataInterface::class);
+        $processBag = $this->createMock(ProcessBuilderBagInterface::class);
 
         $metadata->expects($this->once())
             ->method('getClass')
@@ -96,7 +99,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
             ->with($this->equalTo('controller_service'))
             ->willReturn($definition);
 
-        $instance->buildProcessServices($container, $metadata);
+        $instance->buildProcessServices($container, $metadata, $processBag);
     }
 
     /**
@@ -113,6 +116,11 @@ class ControllerServiceBuilderTest extends AbstractTestClass
 
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(ControllerMetadataInterface::class);
+        $processBag = $this->createMock(ProcessBuilderBagInterface::class);
+
+        $processBag->expects($this->once())
+            ->method('getProcessName')
+            ->willReturn('user');
 
         $metadata->expects($this->once())
             ->method('getClass')
@@ -128,13 +136,13 @@ class ControllerServiceBuilderTest extends AbstractTestClass
         $container->expects($this->once())
             ->method('setDefinition')
             ->with(
-                $this->equalTo('controller_user'),
+                $this->equalTo('user_controller'),
                 $this->isInstanceOf(Definition::class)
             );
 
-        $this->getClassProperty('serviceName')->setValue($instance, 'user');
+        $this->getClassProperty('serviceName')->setValue($instance, 'controller');
 
-        $instance->buildProcessServices($container, $metadata);
+        $instance->buildProcessServices($container, $metadata, $processBag);
     }
 
     /**
@@ -151,6 +159,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
 
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(ControllerMetadataInterface::class);
+        $processBag = $this->createMock(ProcessBuilderBagInterface::class);
 
         $metadata->expects($this->once())
             ->method('getClass')
@@ -163,7 +172,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
 
         $this->expectException(\InvalidArgumentException::class);
 
-        $instance->buildProcessServices($container, $metadata);
+        $instance->buildProcessServices($container, $metadata, $processBag);
     }
 
     /**

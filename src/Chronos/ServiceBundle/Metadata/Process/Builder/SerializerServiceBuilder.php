@@ -39,6 +39,15 @@ class SerializerServiceBuilder implements SerializerServiceBuilderInterface
     use ServiceNameTrait;
 
     /**
+     * Service name
+     *
+     * The default service name to be used at definition registration time
+     *
+     * @var string
+     */
+    private const SERVICE_NAME = 'serializer';
+
+    /**
      * Abstract converter id
      *
      * Store the abstract converter service id to be extended
@@ -79,20 +88,20 @@ class SerializerServiceBuilder implements SerializerServiceBuilderInterface
      *
      * The default SerializerServiceBuilder constructor
      *
-     * @param string $serviceName          The original process service name
      * @param string $abstractConverterId  The abstract converter service id to be extended
      * @param string $abstractNormalizerId The abstract normalizer service id to be extended
      * @param string $abstractSerializerId The abstract serializer service id to be extended
      * @param string $defaultSerializerId  The default serializer service id to be used in case of uneeded extend
+     * @param string $serviceName          The original process service name
      *
      * @return void
      */
     public function __construct(
-        string $serviceName,
         string $abstractConverterId,
         string $abstractNormalizerId,
         string $abstractSerializerId,
-        string $defaultSerializerId
+        string $defaultSerializerId,
+        string $serviceName = self::SERVICE_NAME
     ) {
         $this->serviceName = $serviceName;
         $this->abstractConverterId = $abstractConverterId;
@@ -122,17 +131,18 @@ class SerializerServiceBuilder implements SerializerServiceBuilderInterface
             return;
         }
 
+        $processName = $processBag->getProcessName();
         $converter = new ChildDefinition($this->abstractConverterId);
         $converter->addArgument($metadata->getConverterMap());
-        $converterName = $this->buildServiceName('converter');
+        $converterName = $this->buildServiceName(sprintf('%s_converter', $processName));
 
         $normalizer = new ChildDefinition($this->abstractNormalizerId);
         $normalizer->addArgument(new Reference($converterName));
-        $normalizerName = $this->buildServiceName('normalizer');
+        $normalizerName = $this->buildServiceName(sprintf('%s_normalizer', $processName));
 
         $serializer = new ChildDefinition($this->abstractSerializerId);
         $serializer->replaceArgument(0, new Reference($normalizerName));
-        $serializerName = $this->buildServiceName('serializer');
+        $serializerName = $this->buildServiceName($processName);
 
         $container->setDefinition($converterName, $converter);
         $container->setDefinition($normalizerName, $normalizer);

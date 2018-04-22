@@ -40,6 +40,15 @@ class FormatterServiceBuilder implements FormatterServiceBuilderInterface
     use ServiceNameTrait;
 
     /**
+     * Service name
+     *
+     * The default service name to be used at definition registration time
+     *
+     * @var string
+     */
+    private const SERVICE_NAME = 'formatter';
+
+    /**
      * Serializer builder
      *
      * Store a serializer service builder, in order to build the serialization services
@@ -55,12 +64,16 @@ class FormatterServiceBuilder implements FormatterServiceBuilderInterface
      *
      * @param SerializerServiceBuilderInterface $serializerBuilder The serializer service builder, in order to build
      *                                                             the serialization services
+     * @param string                            $serviceName       The service name
      *
      * @return void
      */
-    public function __construct(SerializerServiceBuilderInterface $serializerBuilder)
-    {
+    public function __construct(
+        SerializerServiceBuilderInterface $serializerBuilder,
+        string $serviceName = self::SERVICE_NAME
+    ) {
         $this->serializerBuilder = $serializerBuilder;
+        $this->serviceName = $serviceName;
     }
 
     /**
@@ -96,6 +109,6 @@ class FormatterServiceBuilder implements FormatterServiceBuilderInterface
             ]
         );
 
-        $container->setDefinition($this->buildServiceName('formatter'), $definition);
+        $container->setDefinition($this->buildServiceName($processBag->getProcessName()), $definition);
     }
 }

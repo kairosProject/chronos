@@ -18,6 +18,7 @@ namespace Chronos\ServiceBundle\Metadata\Process\Builder;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Chronos\ServiceBundle\Metadata\Process\ControllerMetadataInterface;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 
 /**
  * Controller service builder interface
@@ -37,13 +38,15 @@ interface ControllerServiceBuilderInterface
      *
      * Inject services according to metadata into the container
      *
-     * @param ContainerBuilder            $container The application container builder
-     * @param ControllerMetadataInterface $metadata  The dispatcher metadata
+     * @param ContainerBuilder            $container  The application container builder
+     * @param ControllerMetadataInterface $metadata   The dispatcher metadata
+     * @param ProcessBuilderBagInterface  $processBag A process builder bag
      *
      * @return void
      */
     public function buildProcessServices(
         ContainerBuilder $container,
-        ControllerMetadataInterface $metadata
+        ControllerMetadataInterface $metadata,
+        ProcessBuilderBagInterface $processBag
     ) : void;
 }

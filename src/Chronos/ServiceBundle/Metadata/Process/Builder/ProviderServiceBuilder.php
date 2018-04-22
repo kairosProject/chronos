@@ -23,6 +23,7 @@ use Doctrine\ODM\MongoDB\DocumentRepository;
 use Symfony\Component\DependencyInjection\Reference;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Traits\ServiceNameTrait;
 use Chronos\ApiBundle\Provider\GenericDocumentProvider;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 
 /**
  * Provider service builder
@@ -40,6 +41,15 @@ class ProviderServiceBuilder implements ProviderServiceBuilderInterface
     use ServiceNameTrait;
 
     /**
+     * Service name
+     *
+     * The default service name to be used at definition registration time
+     *
+     * @var string
+     */
+    private const SERVICE_NAME = 'provider';
+
+    /**
      * Construct
      *
      * The default ProviderServiceBuilder constructor
@@ -49,7 +59,7 @@ class ProviderServiceBuilder implements ProviderServiceBuilderInterface
      * @return void
      */
     public function __construct(
-        string $serviceName
+        string $serviceName = self::SERVICE_NAME
     ) {
         $this->serviceName = $serviceName;
     }
@@ -59,14 +69,16 @@ class ProviderServiceBuilder implements ProviderServiceBuilderInterface
      *
      * Inject services according to metadata into the container
      *
-     * @param ContainerBuilder          $container The application container builder
-     * @param ProviderMetadataInterface $metadata  The provider metadata
+     * @param ContainerBuilder           $container  The application container builder
+     * @param ProviderMetadataInterface  $metadata   The provider metadata
+     * @param ProcessBuilderBagInterface $processBag A process builder bag
      *
      * @return void
      */
     public function buildProcessServices(
         ContainerBuilder $container,
-        ProviderMetadataInterface $metadata
+        ProviderMetadataInterface $metadata,
+        ProcessBuilderBagInterface $processBag
     ) : void {
         $repository = new Definition(DocumentRepository::class);
         $repository->setFactory(
@@ -76,7 +88,8 @@ class ProviderServiceBuilder implements ProviderServiceBuilderInterface
                 ]
         )->addArgument($metadata->getEntity());
 
-        $repositoryName = $this->buildServiceName('repository');
+        $processName = $processBag->getProcessName();
+        $repositoryName = $this->buildServiceName(sprintf('%s_repository', $processName));
 
         $container->setDefinition($repositoryName, $repository);
 
@@ -84,7 +97,7 @@ class ProviderServiceBuilder implements ProviderServiceBuilderInterface
         $provider->addArgument(new Reference($repositoryName))
             ->addArgument(new Reference('logger'));
 
-        $providerName = $this->buildServiceName('provider');
+        $providerName = $this->buildServiceName($processName);
 
         $container->setDefinition($providerName, $provider);
     }

@@ -90,17 +90,15 @@ class DispatcherServiceBuilder implements DispatcherServiceBuilderInterface
      *
      * Inject services according to metadata into the container
      *
-     * @param ContainerBuilder            $container   The application container builder
-     * @param DispatcherMetadataInterface $metadata    The dispatcher metadata
-     * @param string                      $processName The current process name
-     * @param ProcessBuilderBagInterface  $processBag  A process builder bag
+     * @param ContainerBuilder            $container  The application container builder
+     * @param DispatcherMetadataInterface $metadata   The dispatcher metadata
+     * @param ProcessBuilderBagInterface  $processBag A process builder bag
      *
      * @return void
      */
     public function buildProcessServices(
         ContainerBuilder $container,
         DispatcherMetadataInterface $metadata,
-        string $processName,
         ProcessBuilderBagInterface $processBag
     ) : void {
         $definition = new Definition(
@@ -108,7 +106,7 @@ class DispatcherServiceBuilder implements DispatcherServiceBuilderInterface
             $this->classDefiner->getConstructorArguments()
         );
 
-        $serviceName = $this->buildServiceName($processName);
+        $serviceName = $this->buildServiceName($processBag->getProcessName());
         $processBag->setDispatcherServiceName($serviceName);
         $container->setDefinition($serviceName, $definition);
 

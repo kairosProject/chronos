@@ -75,10 +75,13 @@ class FormatterServiceBuilderTest extends AbstractTestClass
         $processBag->expects($this->once())
             ->method('getSerializerServiceName')
             ->willReturn('default_serializer_id');
+        $processBag->expects($this->once())
+            ->method('getProcessName')
+            ->willReturn('name');
 
         $container->expects($this->once())
             ->method('setDefinition')
-            ->with($this->equalTo('formatter_name'), $this->callback([$this, 'definitionIsValid']));
+            ->with($this->equalTo('name_formatter'), $this->callback([$this, 'definitionIsValid']));
 
         $serializerMetadata = $this->createMock(SerializerMetadataInterface::class);
         $serializerMetadata->expects($this->once())
@@ -108,7 +111,7 @@ class FormatterServiceBuilderTest extends AbstractTestClass
             );
 
         $this->getClassProperty('serializerBuilder')->setValue($instance, $serializer);
-        $this->getClassProperty('serviceName')->setValue($instance, 'name');
+        $this->getClassProperty('serviceName')->setValue($instance, 'formatter');
 
         $instance->buildProcessServices($container, $metadata, $processBag);
     }

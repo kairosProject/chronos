@@ -30,6 +30,15 @@ namespace Chronos\ServiceBundle\Metadata\Process\Builder\Bag;
 interface ProcessBuilderBagInterface
 {
     /**
+     * Get process name
+     *
+     * Return the current process name
+     *
+     * @return string
+     */
+    public function getProcessName() : string;
+
+    /**
      * Set dispatcher service name
      *
      * Store the dispatcher definition service name

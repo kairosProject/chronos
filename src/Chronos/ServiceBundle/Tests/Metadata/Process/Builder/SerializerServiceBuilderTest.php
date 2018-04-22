@@ -48,11 +48,22 @@ class SerializerServiceBuilderTest extends AbstractTestClass
     {
         $this->assertConstructor(
             [
-                'serviceName' => 'service_name',
+                'abstractConverterId' => 'abstract_converter_id',
+                'abstractNormalizerId' => 'abstract_normalizer_id',
+                'abstractSerializerId' => 'abstract_serializer_id',
+                'defaultSerializerId' => 'default_serializer_id',
+                'serviceName' => 'service_name'
+            ]
+        );
+        $this->assertConstructor(
+            [
                 'abstractConverterId' => 'abstract_converter_id',
                 'abstractNormalizerId' => 'abstract_normalizer_id',
                 'abstractSerializerId' => 'abstract_serializer_id',
                 'defaultSerializerId' => 'default_serializer_id'
+            ],
+            [
+                'serviceName' => 'serializer'
             ]
         );
     }
@@ -107,21 +118,24 @@ class SerializerServiceBuilderTest extends AbstractTestClass
 
         $processBag->expects($this->once())
             ->method('setSerializerServiceName')
-            ->with($this->equalTo('serializer_name'));
+            ->with($this->equalTo('name_serializer'));
+        $processBag->expects($this->once())
+            ->method('getProcessName')
+            ->willReturn('name');
 
         $container->expects($this->exactly(3))
             ->method('setDefinition')
             ->withConsecutive(
                 [
-                    $this->equalTo('converter_name'),
+                    $this->equalTo('name_converter_serializer'),
                     $this->callback([$this, 'converterIsValid'])
                 ],
                 [
-                    $this->equalTo('normalizer_name'),
+                    $this->equalTo('name_normalizer_serializer'),
                     $this->callback([$this, 'normalizerIsValid'])
                 ],
                 [
-                    $this->equalTo('serializer_name'),
+                    $this->equalTo('name_serializer'),
                     $this->callback([$this, 'serializerIsValid'])
                 ]
             );
@@ -133,7 +147,7 @@ class SerializerServiceBuilderTest extends AbstractTestClass
         $this->getClassProperty('abstractConverterId')->setValue($instance, 'abstract_converter_id');
         $this->getClassProperty('abstractNormalizerId')->setValue($instance, 'abstract_normalizer_id');
         $this->getClassProperty('abstractSerializerId')->setValue($instance, 'abstract_serializer_id');
-        $this->getClassProperty('serviceName')->setValue($instance, 'name');
+        $this->getClassProperty('serviceName')->setValue($instance, 'serializer');
 
         $instance->buildProcessServices($container, $metadata, $processBag);
     }
@@ -153,7 +167,7 @@ class SerializerServiceBuilderTest extends AbstractTestClass
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
 
         $reference = $definition->getArgument(0);
-        $this->assertEquals('normalizer_name', (string)$reference);
+        $this->assertEquals('name_normalizer_serializer', (string)$reference);
         return true;
     }
 
@@ -172,7 +186,7 @@ class SerializerServiceBuilderTest extends AbstractTestClass
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
 
         $reference = $definition->getArgument(0);
-        $this->assertEquals('converter_name', (string)$reference);
+        $this->assertEquals('name_converter_serializer', (string)$reference);
         return true;
     }
 
