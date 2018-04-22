@@ -22,4 +22,4 @@ process:
         controller:
             service: UserController
             arguments:
-                - "@user_dispatcher"
+                - "user_dispatcher"
