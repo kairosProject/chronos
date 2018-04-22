@@ -30,6 +30,17 @@ namespace Chronos\ServiceBundle\Metadata\Process\Builder\Bag;
 interface ProcessBuilderBagInterface
 {
     /**
+     * Set process name
+     *
+     * Set the current process name
+     *
+     * @param string $name The current process name
+     *
+     * @return void
+     */
+    public function setProcessName(string $name) : void;
+
+    /**
      * Get process name
      *
      * Return the current process name

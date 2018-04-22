@@ -9,7 +9,8 @@
         	"Chronos/UserBundle/Tests",
         	"Tests",
         	"Chronos/ServiceBundle/Tests",
-        	"Chronos/ServiceBundle/Metadata/Process/Parser/Loader/MetadataAggregatorTrait.php"
+        	"Chronos/ServiceBundle/Metadata/Process/Parser/Loader/MetadataAggregatorTrait.php",
+        	"Chronos/ServiceBundle/Metadata/Process/Builder/Traits/ServiceNameTrait.php"
         ]
     },
     "timeout": 10,

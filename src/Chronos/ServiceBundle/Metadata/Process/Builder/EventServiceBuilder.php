@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace Chronos\ServiceBundle\Metadata\Process\Builder;
 
-use Chronos\ServiceBundle\Metadata\Process\Builder\Traits\ServiceNameTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Chronos\ServiceBundle\Metadata\Process\EventMetadataInterface;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
