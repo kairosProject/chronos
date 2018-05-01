@@ -83,13 +83,13 @@ class ProviderServiceBuilder implements ProviderServiceBuilderInterface
         $repository = new Definition(DocumentRepository::class);
         $repository->setFactory(
             [
-                    new Reference($metadata->getFactory()),
-                    'getRepository'
-                ]
+                new Reference($metadata->getFactory()),
+                'getRepository'
+            ]
         )->addArgument($metadata->getEntity());
 
         $processName = $processBag->getProcessName();
-        $repositoryName = $this->buildServiceName(sprintf('%s_repository', $processName));
+        $repositoryName = sprintf('%s_repository', $this->buildServiceName($processName));
 
         $container->setDefinition($repositoryName, $repository);
 

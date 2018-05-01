@@ -127,11 +127,11 @@ class SerializerServiceBuilderTest extends AbstractTestClass
             ->method('setDefinition')
             ->withConsecutive(
                 [
-                    $this->equalTo('name_converter_serializer'),
+                    $this->equalTo('name_serializer_converter'),
                     $this->callback([$this, 'converterIsValid'])
                 ],
                 [
-                    $this->equalTo('name_normalizer_serializer'),
+                    $this->equalTo('name_serializer_normalizer'),
                     $this->callback([$this, 'normalizerIsValid'])
                 ],
                 [
@@ -167,7 +167,7 @@ class SerializerServiceBuilderTest extends AbstractTestClass
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
 
         $reference = $definition->getArgument(0);
-        $this->assertEquals('name_normalizer_serializer', (string)$reference);
+        $this->assertEquals('name_serializer_normalizer', (string)$reference);
         return true;
     }
 
@@ -186,7 +186,7 @@ class SerializerServiceBuilderTest extends AbstractTestClass
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
 
         $reference = $definition->getArgument(0);
-        $this->assertEquals('name_converter_serializer', (string)$reference);
+        $this->assertEquals('name_serializer_converter', (string)$reference);
         return true;
     }
 

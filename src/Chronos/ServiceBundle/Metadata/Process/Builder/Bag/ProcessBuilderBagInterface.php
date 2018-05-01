@@ -36,9 +36,9 @@ interface ProcessBuilderBagInterface
      *
      * @param string $name The current process name
      *
-     * @return void
+     * @return self
      */
-    public function setProcessName(string $name) : void;
+    public function setProcessName(string $name) : ProcessBuilderBagInterface;
 
     /**
      * Get process name
@@ -56,9 +56,9 @@ interface ProcessBuilderBagInterface
      *
      * @param string $serviceName The dispatcher service definition name
      *
-     * @return void
+     * @return self
      */
-    public function setDispatcherServiceName(string $serviceName) : void;
+    public function setDispatcherServiceName(string $serviceName) : ProcessBuilderBagInterface;
 
     /**
      * Get dispatcher service name
@@ -76,9 +76,9 @@ interface ProcessBuilderBagInterface
      *
      * @param string $serviceName The serializer service name
      *
-     * @return void
+     * @return self
      */
-    public function setSerializerServiceName(string $serviceName) : void;
+    public function setSerializerServiceName(string $serviceName) : ProcessBuilderBagInterface;
 
     /**
      * Get serializer service name

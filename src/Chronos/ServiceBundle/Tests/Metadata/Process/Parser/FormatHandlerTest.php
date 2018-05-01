@@ -20,6 +20,7 @@ use Chronos\ApiBundle\Tests\AbstractTestClass;
 use Chronos\ServiceBundle\Metadata\Process\Parser\FormatHandler;
 use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ValidationManager;
 use Chronos\ServiceBundle\Tests\Metadata\Process\Parser\Misc\EventSubscriber;
+use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ValidationPayloadInterface;
 
 /**
  * Format handler test
@@ -88,7 +89,17 @@ class FormatHandlerTest extends AbstractTestClass
 
         $this->getClassProperty('listenerValidator')->setValue($instance, $validationManager);
 
-        $result = $instance->handleData(include __DIR__.'/FormatInputFixtures.php');
+        $data = include __DIR__.'/FormatInputFixtures.php';
+
+        $payload = $this->createMock(ValidationPayloadInterface::class);
+        $payloadArgs = [];
+        foreach ($data as $config) {
+            $payloadArgs[] = $this->equalTo($config);
+        }
+        $this->getInvocationBuilder($payload, $this->exactly(count($data)), 'setConfig')
+            ->withConsecutive(...$payloadArgs);
+
+        $result = $instance->handleData($data, $payload);
         $expected = include __DIR__.'/FormatOutputFixture.php';
 
         $this->assertEquals($expected, $result);

@@ -17,6 +17,9 @@ declare(strict_types=1);
 namespace Chronos\ApiBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Matcher\Invocation;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 
 /**
  * Abstract test class
@@ -52,6 +55,22 @@ abstract class AbstractTestClass extends TestCase
     protected function setUp()
     {
         $this->classReflection = new \ReflectionClass($this->getTestedClass());
+    }
+
+    /**
+     * Get invocation builder
+     *
+     * Create an invocation builder base on an invocation specification
+     *
+     * @param MockObject $mock   The base mock object
+     * @param Invocation $count  The invocation count
+     * @param string     $method The method name
+     *
+     * @return InvocationMocker
+     */
+    protected function getInvocationBuilder(MockObject $mock, Invocation $count, string $method) : InvocationMocker
+    {
+        return $mock->expects($count)->method($method);
     }
 
     /**
@@ -120,6 +139,27 @@ abstract class AbstractTestClass extends TestCase
     protected function getInstance()
     {
         return $this->classReflection->newInstanceWithoutConstructor();
+    }
+
+    /**
+     * Assert has simple accessor
+     *
+     * Validate the getter and setter as simple ones for the given property, with the given value
+     *
+     * @param string $property The property to validate
+     * @param mixed  $value    The value to use with getter and setter
+     *
+     * @return void
+     */
+    protected function assertHasSimpleAccessor(string $property, $value) : void
+    {
+        $getter = sprintf('get%s', ucfirst($property));
+        $this->assertPublicMethod($getter);
+        $this->assertIsSimpleGetter($property, $getter, $value);
+
+        $setter = sprintf('set%s', ucfirst($property));
+        $this->assertPublicMethod($setter);
+        $this->assertIsSimpleSetter($property, $setter, $value);
     }
 
     /**

@@ -24,6 +24,7 @@ use Chronos\ServiceBundle\Metadata\Process\EventMetadataInterface;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use PHPUnit\Framework\MockObject\MockObject;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Decorator\ServiceArgumentInterface;
 
 /**
  * EventServiceBuilder test
@@ -49,9 +50,25 @@ class EventServiceBuilderTest extends AbstractTestClass
     {
         $this->assertConstructor(
             [
-                'same:listenerValidator' => $this->createMock(ListenerValidatorInterface::class)
+                'same:listenerValidator' => $this->createMock(ListenerValidatorInterface::class),
+                'same:subscriberValidator' => $this->createMock(ListenerValidatorInterface::class),
+                'same:argumentDecorator' => $this->createMock(ServiceArgumentInterface::class)
             ]
         );
+    }
+
+    /**
+     * Test scope
+     *
+     * Validate the Chronos\ServiceBundle\Metadata\Process\Builder\EventServiceBuilder method's scope
+     *
+     * @return void
+     */
+    public function testScope()
+    {
+        $this->assertPrivateMethod('addListener');
+        $this->assertPrivateMethod('addSubscriber');
+        $this->assertPublicMethod('buildProcessServices');
     }
 
     /**
@@ -70,6 +87,56 @@ class EventServiceBuilderTest extends AbstractTestClass
             [[['subscriber']]],
             [[['function1'], ['function2']]]
         ];
+    }
+
+    /**
+     * Test build error
+     *
+     * Validate the Chronos\ServiceBundle\Metadata\Process\Builder\EventServiceBuilder::buildProcessServices method in
+     * case of error
+     *
+     * @return void
+     */
+    public function testBuildError()
+    {
+        $instance = $this->getInstance();
+
+        $listenerValidator = $this->createMock(ListenerValidatorInterface::class);
+        $subscriberValidator = $this->createMock(ListenerValidatorInterface::class);
+
+        $this->getClassProperty('listenerValidator')->setValue($instance, $listenerValidator);
+        $this->getClassProperty('subscriberValidator')->setValue($instance, $subscriberValidator);
+
+        $container = $this->createMock(ContainerBuilder::class);
+        $metadata = $this->createMock(EventMetadataInterface::class);
+        $processBag = $this->createMock(ProcessBuilderBagInterface::class);
+
+        $processBag->expects($this->once())
+            ->method('getDispatcherServiceName')
+            ->willReturn('dispatcher_service');
+
+        $container->expects($this->once())
+            ->method('hasDefinition')
+            ->with($this->equalTo('dispatcher_service'))
+            ->willReturn(true);
+
+        $container->expects($this->once())
+            ->method('getDefinition')
+            ->with($this->equalTo('dispatcher_service'))
+            ->willReturn($this->createMock(Definition::class));
+
+        $metadata->expects($this->once())
+            ->method('getListeners')
+            ->willReturn([['undefined_listener']]);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Listener must be a valid listener or subscriber');
+
+        $instance->buildProcessServices(
+            $container,
+            $metadata,
+            $processBag
+        );
     }
 
     /**
@@ -122,8 +189,12 @@ class EventServiceBuilderTest extends AbstractTestClass
         $instance = $this->getInstance();
 
         $listenerValidator = $this->createMock(ListenerValidatorInterface::class);
+        $subscriberValidator = $this->createMock(ListenerValidatorInterface::class);
+        $decorator = $this->createMock(ServiceArgumentInterface::class);
 
         $this->getClassProperty('listenerValidator')->setValue($instance, $listenerValidator);
+        $this->getClassProperty('subscriberValidator')->setValue($instance, $subscriberValidator);
+        $this->getClassProperty('argumentDecorator')->setValue($instance, $decorator);
 
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(EventMetadataInterface::class);
@@ -148,7 +219,14 @@ class EventServiceBuilderTest extends AbstractTestClass
             ->method('getListeners')
             ->willReturn($listeners);
 
-        $this->configureMocks($listeners, $metadata, $listenerValidator, $dispatcherDefinition);
+        $this->configureMocks(
+            $listeners,
+            $metadata,
+            $listenerValidator,
+            $subscriberValidator,
+            $dispatcherDefinition,
+            $decorator
+        );
 
         $instance->buildProcessServices(
             $container,
@@ -236,10 +314,12 @@ class EventServiceBuilderTest extends AbstractTestClass
      *
      * This method configure the tested mocks regarding the listeners definition
      *
-     * @param array      $listeners         The listener list to build the dispatcher
-     * @param MockObject $metadata          The base metadata
-     * @param MockObject $listenerValidator The listener validator mock object
-     * @param MockObject $dispatcher        The dispatcher to load
+     * @param array      $listeners           The listener list to build the dispatcher
+     * @param MockObject $metadata            The base metadata
+     * @param MockObject $listenerValidator   The listener validator mock object
+     * @param MockObject $subscriberValidator The subscriber validator mock object
+     * @param MockObject $dispatcher          The dispatcher to load
+     * @param MockObject $decorator           The argument decorator
      *
      * @return void
      */
@@ -247,19 +327,33 @@ class EventServiceBuilderTest extends AbstractTestClass
         array $listeners,
         MockObject $metadata,
         MockObject $listenerValidator,
-        MockObject $dispatcher
+        MockObject $subscriberValidator,
+        MockObject $dispatcher,
+        MockObject $decorator
     ) : void {
         if (empty($listeners)) {
             return;
         }
 
         $validatorArgs = [];
+        $decoratorReturns = [];
         foreach ($listeners as $listener) {
+            if (isset($listener[0])) {
+                $decoratorReturns[] = $listener[0];
+            }
             $validatorArgs[] = $this->equalTo($listener);
         }
 
+        $this->getInvocationBuilder($decorator, $this->exactly(count($decoratorReturns)), 'decorate')
+            ->willReturnOnConsecutiveCalls(...$decoratorReturns);
+
         $validity = true;
         if ($listeners[0][0] == 'subscriber') {
+            $subscriberValidator->expects($this->exactly(count($listeners)))
+                ->method('isValid')
+                ->withConsecutive(...$validatorArgs)
+                ->willReturn(true);
+
             $validity = false;
         }
 

@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace Chronos\ServiceBundle\Metadata\Process\Parser;
 
+use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ValidationPayloadInterface;
+
 /**
  * Format handler interface
  *
@@ -35,9 +37,10 @@ interface FormatHandlerInterface
      * Perform the data handling with all configuration with leading 'process' key. As it, a set of data with all
      * leading 'process' key are able to be given for parsing and validation.
      *
-     * @param array $data The data to handle
+     * @param array                      $data    The data to handle
+     * @param ValidationPayloadInterface $payload An optional validation payload
      *
      * @return array
      */
-    public function handleData(array $data) : array;
+    public function handleData(array $data, ValidationPayloadInterface $payload) : array;
 }

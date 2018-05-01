@@ -22,6 +22,7 @@ use Chronos\ServiceBundle\Metadata\Process\Parser\Traits\FormatterSectionTrait;
 use Chronos\ServiceBundle\Metadata\Process\Parser\Traits\ProviderSectionTrait;
 use Chronos\ServiceBundle\Metadata\Process\Parser\Traits\DispatcherSectionTrait;
 use Chronos\ServiceBundle\Metadata\Process\Parser\Traits\ControllerSectionTrait;
+use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ValidationPayloadInterface;
 
 /**
  * Format handler
@@ -71,16 +72,21 @@ class FormatHandler implements FormatHandlerInterface
      * Perform the data handling with all configuration without leading 'process' key. As it, a set of data without all
      * leading 'process' key are able to be given for parsing and validation.
      *
-     * @param array $data The data to handle
+     * @param array                      $data    The data to handle
+     * @param ValidationPayloadInterface $payload An optional validation payload
      *
      * @return array
      */
-    public function handleData(array $data) : array
+    public function handleData(array $data, ValidationPayloadInterface $payload = null) : array
     {
         $tree = $this->configureFormat()->buildTree();
 
         $currentConfig = [];
         foreach ($data as $config) {
+            if ($payload) {
+                $payload->setConfig($config);
+            }
+
             $config = $tree->normalize($config);
             $currentConfig = $tree->merge($currentConfig, $config);
         }

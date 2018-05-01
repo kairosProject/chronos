@@ -134,11 +134,11 @@ class SerializerServiceBuilder implements SerializerServiceBuilderInterface
         $processName = $processBag->getProcessName();
         $converter = new ChildDefinition($this->abstractConverterId);
         $converter->addArgument($metadata->getConverterMap());
-        $converterName = $this->buildServiceName(sprintf('%s_converter', $processName));
+        $converterName = sprintf('%s_converter', $this->buildServiceName($processName));
 
         $normalizer = new ChildDefinition($this->abstractNormalizerId);
         $normalizer->addArgument(new Reference($converterName));
-        $normalizerName = $this->buildServiceName(sprintf('%s_normalizer', $processName));
+        $normalizerName = sprintf('%s_normalizer', $this->buildServiceName($processName));
 
         $serializer = new ChildDefinition($this->abstractSerializerId);
         $serializer->replaceArgument(0, new Reference($normalizerName));

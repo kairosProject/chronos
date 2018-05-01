@@ -54,13 +54,13 @@ class ServiceListenerValidator implements ListenerValidatorInterface
      *
      * The default ServiceListenerValidator constructor
      *
-     * @param ContainerBuilder  $container Store the application container builder
-     * @param ValidationManager $manager   The validator used to validate the call of the service, as callback or
-     *                                     subscriber
+     * @param ContainerBuilder           $container Store the application container builder
+     * @param ListenerValidatorInterface $manager   The validator used to validate the call of the service, as callback
+     *                                              or subscriber
      *
      * @return void
      */
-    public function __construct(ContainerBuilder $container, ValidationManager $manager)
+    public function __construct(ContainerBuilder $container, ListenerValidatorInterface $manager)
     {
         $this->container = $container;
         $this->callValidator = $manager;

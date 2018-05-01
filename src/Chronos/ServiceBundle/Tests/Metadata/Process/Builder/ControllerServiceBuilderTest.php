@@ -22,6 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Chronos\ServiceBundle\Metadata\Process\ControllerMetadataInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Decorator\ServiceArgumentInterface;
 
 /**
  * ControllerServiceBuilder test
@@ -45,8 +46,21 @@ class ControllerServiceBuilderTest extends AbstractTestClass
      */
     public function testConstruct()
     {
-        $this->assertConstructor(['serviceName' => 'name']);
-        $this->assertConstructor([], ['serviceName' => 'controller']);
+        $this->assertConstructor(
+            [
+                'same:argumentDecorator' => $this->createMock(ServiceArgumentInterface::class),
+                'serviceName' => 'name'
+            ]
+        );
+
+        $this->assertConstructor(
+            [
+                'same:argumentDecorator' => $this->createMock(ServiceArgumentInterface::class)
+            ],
+            [
+                'serviceName' => 'controller'
+            ]
+        );
     }
 
     /**
@@ -77,6 +91,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(ControllerMetadataInterface::class);
         $processBag = $this->createMock(ProcessBuilderBagInterface::class);
+        $serviceDecorator = $this->createMock(ServiceArgumentInterface::class);
 
         $metadata->expects($this->once())
             ->method('getClass')
@@ -99,6 +114,11 @@ class ControllerServiceBuilderTest extends AbstractTestClass
             ->with($this->equalTo('controller_service'))
             ->willReturn($definition);
 
+        $this->getInvocationBuilder($serviceDecorator, $this->once(), 'decorate')
+            ->with($this->equalTo('arguments'))
+            ->willReturn('arguments');
+        $this->getClassProperty('argumentDecorator')->setValue($instance, $serviceDecorator);
+
         $instance->buildProcessServices($container, $metadata, $processBag);
     }
 
@@ -117,6 +137,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
         $container = $this->createMock(ContainerBuilder::class);
         $metadata = $this->createMock(ControllerMetadataInterface::class);
         $processBag = $this->createMock(ProcessBuilderBagInterface::class);
+        $serviceDecorator = $this->createMock(ServiceArgumentInterface::class);
 
         $processBag->expects($this->once())
             ->method('getProcessName')
@@ -127,7 +148,7 @@ class ControllerServiceBuilderTest extends AbstractTestClass
             ->willReturn(\stdClass::class);
         $metadata->expects($this->once())
             ->method('getArguments')
-            ->willReturn(['arguments']);
+            ->willReturn(['arguments', ['array']]);
 
         $container->expects($this->once())
             ->method('hasDefinition')
@@ -141,6 +162,11 @@ class ControllerServiceBuilderTest extends AbstractTestClass
             );
 
         $this->getClassProperty('serviceName')->setValue($instance, 'controller');
+
+        $this->getInvocationBuilder($serviceDecorator, $this->once(), 'decorate')
+            ->with($this->equalTo('arguments'))
+            ->willReturn('arguments');
+        $this->getClassProperty('argumentDecorator')->setValue($instance, $serviceDecorator);
 
         $instance->buildProcessServices($container, $metadata, $processBag);
     }

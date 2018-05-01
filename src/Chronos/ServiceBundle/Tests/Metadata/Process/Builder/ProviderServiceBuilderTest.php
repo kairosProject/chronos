@@ -81,7 +81,7 @@ class ProviderServiceBuilderTest extends AbstractTestClass
             ->method('setDefinition')
             ->withConsecutive(
                 [
-                    $this->equalTo('name_repository_provider'),
+                    $this->equalTo('name_provider_repository'),
                     $this->isInstanceOf(Definition::class)
                 ],
                 [

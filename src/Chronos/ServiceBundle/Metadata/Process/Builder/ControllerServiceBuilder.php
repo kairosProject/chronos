@@ -21,6 +21,7 @@ use Chronos\ServiceBundle\Metadata\Process\ControllerMetadataInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Traits\ServiceNameTrait;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Decorator\ServiceArgumentInterface;
 
 /**
  * Controller service builder
@@ -47,17 +48,31 @@ class ControllerServiceBuilder implements ControllerServiceBuilderInterface
     private const SERVICE_NAME = 'controller';
 
     /**
+     * Argument decorator
+     *
+     * The definition argument decorator used to transform a service name into reference
+     *
+     * @var ServiceArgumentInterface
+     */
+    private $argumentDecorator;
+
+    /**
      * Construct
      *
      * The default ControllerServiceBuilder constructor
      *
-     * @param string $serviceName The service name
+     * @param ServiceArgumentInterface $argumentDecorator The definition argument decorator used to transform a
+     *                                                    service name into reference
+     * @param string                   $serviceName       The service name
      *
      * @return void
      */
-    public function __construct(string $serviceName = self::SERVICE_NAME)
-    {
-            $this->serviceName = $serviceName;
+    public function __construct(
+        ServiceArgumentInterface $argumentDecorator,
+        string $serviceName = self::SERVICE_NAME
+    ) {
+        $this->serviceName = $serviceName;
+        $this->argumentDecorator = $argumentDecorator;
     }
 
     /**
@@ -78,7 +93,18 @@ class ControllerServiceBuilder implements ControllerServiceBuilderInterface
     ) : void {
         $controller = $this->getController($container, $metadata->getClass(), $processBag);
 
-        $controller->setArguments($metadata->getArguments());
+        $controller->setArguments(
+            array_map(
+                function ($element) {
+                    if (!is_string($element)) {
+                        return $element;
+                    }
+
+                    return $this->argumentDecorator->decorate($element);
+                },
+                $metadata->getArguments()
+            )
+        );
     }
 
     /**

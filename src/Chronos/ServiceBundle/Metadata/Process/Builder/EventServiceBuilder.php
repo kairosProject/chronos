@@ -20,6 +20,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Chronos\ServiceBundle\Metadata\Process\EventMetadataInterface;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterface;
 use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ListenerValidatorInterface;
+use Chronos\ServiceBundle\Metadata\Process\Builder\Decorator\ServiceArgumentInterface;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * Event service builder
@@ -44,19 +46,45 @@ class EventServiceBuilder implements EventServiceBuilderInterface
     private $listenerValidator;
 
     /**
+     * Subscriber validator
+     *
+     * A ValidationStrategy that assert the listener part of the event to be injected using addSubscriber method
+     *
+     * @var ListenerValidatorInterface
+     */
+    private $subscriberValidator;
+
+    /**
+     * Argument decorator
+     *
+     * A ServiceArgumentInterface that define the arguments as reference if needed
+     *
+     * @var ServiceArgumentInterface
+     */
+    private $argumentDecorator;
+
+    /**
      * Construct
      *
      * The default DispatcherServiceBuilder constructor
      *
-     * @param ListenerValidatorInterface $listenerValidator A ValidationStrategy that assert the listener part of
-     *                                                      the event to be injected using addListener method
+     * @param ListenerValidatorInterface $listenerValidator   A ValidationStrategy that assert the listener part of
+     *                                                        the event to be injected using addListener method
+     * @param ListenerValidatorInterface $subscriberValidator A ValidationStrategy that assert the listener part of
+     *                                                        the event to be injected using addSubscriber method
+     * @param ServiceArgumentInterface   $decorator           A ServiceArgumentInterface that define the arguments
+     *                                                        as reference if needed
      *
      * @return void
      */
     public function __construct(
-        ListenerValidatorInterface $listenerValidator
+        ListenerValidatorInterface $listenerValidator,
+        ListenerValidatorInterface $subscriberValidator,
+        ServiceArgumentInterface $decorator
     ) {
             $this->listenerValidator = $listenerValidator;
+            $this->subscriberValidator = $subscriberValidator;
+            $this->argumentDecorator = $decorator;
     }
 
     /**
@@ -89,16 +117,61 @@ class EventServiceBuilder implements EventServiceBuilderInterface
         $dispatcher = $container->getDefinition($dispatcherService);
 
         foreach ($metadata->getListeners() as $listener) {
-            if ($this->listenerValidator->isValid($listener)) {
-                $priority = 0;
-                if (is_numeric($listener[(count($listener) - 1)])) {
-                    $priority = array_pop($listener);
-                }
-
-                $dispatcher->addMethodCall('addListener', [$metadata->getEvent(), $listener, $priority]);
-                continue;
-            }
-            $dispatcher->addMethodCall('addSubscriber', [$listener]);
+            $this->addListener($listener, $dispatcher, $metadata);
         }
+    }
+
+    /**
+     * Add listener
+     *
+     * Add a listener to the dispatcher, or fallback to subscriber
+     *
+     * @param array                  $listener   The listener array
+     * @param Definition             $dispatcher The dispatcher definition
+     * @param EventMetadataInterface $metadata   The event metadata
+     *
+     * @return void
+     */
+    private function addListener(array $listener, Definition $dispatcher, EventMetadataInterface $metadata) : void
+    {
+        if ($this->listenerValidator->isValid($listener)) {
+            $priority = 0;
+            if (is_numeric($listener[(count($listener) - 1)])) {
+                $priority = array_pop($listener);
+            }
+
+            if (isset($listener[0])) {
+                $listener[0] = $this->argumentDecorator->decorate($listener[0]);
+            }
+
+            $dispatcher->addMethodCall('addListener', [$metadata->getEvent(), $listener, $priority]);
+            return;
+        }
+
+        $this->addSubscriber($listener, $dispatcher);
+    }
+
+    /**
+     * Add subscriber
+     *
+     * Add a subscriber to the dispatcher
+     *
+     * @param array      $listener   The listener array
+     * @param Definition $dispatcher The dispatcher definition
+     *
+     * @return void
+     */
+    private function addSubscriber(array $listener, Definition $dispatcher) : void
+    {
+        if ($this->subscriberValidator->isValid($listener)) {
+            if (isset($listener[0])) {
+                $listener[0] = $this->argumentDecorator->decorate($listener[0]);
+            }
+
+            $dispatcher->addMethodCall('addSubscriber', [$listener]);
+            return;
+        }
+
+        throw new \LogicException('Listener must be a valid listener or subscriber');
     }
 }
