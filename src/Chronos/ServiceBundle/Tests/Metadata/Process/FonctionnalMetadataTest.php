@@ -52,6 +52,8 @@ use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ServiceConfiguration
 use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\ValidationPayload;
 use Chronos\ApiBundle\Formatter\GenericEventDataFormatter;
 use Symfony\Component\DependencyInjection\ChildDefinition;
+use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\Factory\HandlerManagerFactory;
+use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\Factory\EventManagerFactory;
 
 /**
  * Functionnal metadata test
@@ -92,24 +94,10 @@ class FonctionnalMetadataTest extends TestCase
 
             $data = $yamlLoader->load();
 
-            $priorityValidator = new PriorityValidator();
-            $strategy = new AffirmativeStrategy();
-            $callable = new CallableListenerValidator($priorityValidator);
-            $subscriber = new SubscriberListenerValidator();
-            $serviceManager = new ValidationManager($strategy);
-            $serviceManager->addValidator($callable);
-            $serviceManager->addValidator($subscriber);
-
             $payload = new ValidationPayload();
 
-            $manager = new ValidationManager(new ReversionStrategy($strategy));
-            $manager->addValidator($callable);
-            $manager->addValidator(new FunctionListenerValidator($priorityValidator));
-            $manager->addValidator(new ServiceListenerValidator($container, $serviceManager));
-            $manager->addValidator($subscriber);
-            $manager->addValidator(new ServiceConfigurationGuesser($payload));
-
-            $formatHandler = new FormatHandler($manager);
+            $managerFactory = new HandlerManagerFactory();
+            $formatHandler = new FormatHandler($managerFactory->getManager($payload, $container));
 
             $metadatas = $formatHandler->handleData($data, $payload);
 
@@ -181,17 +169,7 @@ class FonctionnalMetadataTest extends TestCase
         $container->register('defaultSerializerId', \stdClass::class);
         $container->register('UserController', \stdClass::class);
 
-        $priorityValidator = new PriorityValidator();
-        $callable = new CallableListenerValidator($priorityValidator);
-
-        $listenerManager = new ValidationManager(new AffirmativeStrategy());
-        $listenerManager->addValidator($callable);
-        $listenerManager->addValidator(new ServiceListenerValidator($container, $callable));
-
-        $subscriber = new SubscriberListenerValidator();
-        $subscriberManager = new ValidationManager(new AffirmativeStrategy());
-        $subscriberManager->addValidator($subscriber);
-        $subscriberManager->addValidator(new ServiceListenerValidator($container, $subscriber));
+        $eventManagerFactory = new EventManagerFactory();
 
         $controllerBuilder = new ControllerServiceBuilder(
             new ServiceArgumentDecorator(
@@ -201,8 +179,8 @@ class FonctionnalMetadataTest extends TestCase
             )
         );
         $eventBuilder = new EventServiceBuilder(
-            $listenerManager,
-            $subscriberManager,
+            $eventManagerFactory->getListenerManager($container),
+            $eventManagerFactory->getSubscriberManager($container),
             new ServiceArgumentDecorator(new ServiceValidator($container))
         );
 
