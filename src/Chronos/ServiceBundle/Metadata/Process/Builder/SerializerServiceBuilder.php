@@ -22,6 +22,9 @@ use Chronos\ServiceBundle\Metadata\Process\Builder\Bag\ProcessBuilderBagInterfac
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Chronos\ServiceBundle\Metadata\Process\Builder\Traits\ServiceNameTrait;
+use Chronos\ApiBundle\Converter\GenericNameConverter;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Serializer service builder
@@ -133,15 +136,18 @@ class SerializerServiceBuilder implements SerializerServiceBuilderInterface
 
         $processName = $processBag->getProcessName();
         $converter = new ChildDefinition($this->abstractConverterId);
+        $converter->setClass(GenericNameConverter::class);
         $converter->addArgument($metadata->getConverterMap());
         $converterName = sprintf('%s_converter', $this->buildServiceName($processName));
 
         $normalizer = new ChildDefinition($this->abstractNormalizerId);
+        $normalizer->setClass(ObjectNormalizer::class);
         $normalizer->addArgument(new Reference($converterName));
         $normalizerName = sprintf('%s_normalizer', $this->buildServiceName($processName));
 
         $serializer = new ChildDefinition($this->abstractSerializerId);
-        $serializer->replaceArgument(0, new Reference($normalizerName));
+        $serializer->setClass(Serializer::class);
+        $serializer->replaceArgument('$normalizers', [new Reference($normalizerName)]);
         $serializerName = $this->buildServiceName($processName);
 
         $container->setDefinition($converterName, $converter);

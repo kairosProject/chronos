@@ -54,6 +54,8 @@ use Chronos\ApiBundle\Formatter\GenericEventDataFormatter;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\Factory\HandlerManagerFactory;
 use Chronos\ServiceBundle\Metadata\Process\Parser\Validator\Factory\EventManagerFactory;
+use Chronos\ServiceBundle\Metadata\Process\Builder\ServiceBuilder;
+use Chronos\ServiceBundle\Metadata\Process\Parser\YamlFileLoader;
 
 /**
  * Functionnal metadata test
@@ -86,28 +88,8 @@ class FonctionnalMetadataTest extends TestCase
 
         $file = __DIR__.'/Fixtures/FunctionnalTestFixtures.yaml';
 
-        $phpLoader = new PHPLoader();
-        $yamlLoader = new YamlLoader($phpLoader, new Yaml(), Yaml::PARSE_CONSTANT);
-
-        if ($yamlLoader->support($file)) {
-            $yamlLoader->addMetadata($file);
-
-            $data = $yamlLoader->load();
-
-            $payload = new ValidationPayload();
-
-            $managerFactory = new HandlerManagerFactory();
-            $formatHandler = new FormatHandler($managerFactory->getManager($payload, $container));
-
-            $metadatas = $formatHandler->handleData($data, $payload);
-
-            $builderFactory = new BuilderFactory();
-            $builder = $builderFactory->getBuilder();
-
-            return $builder->buildFromData($metadatas);
-        }
-
-        $this->fail();
+        $loader = new YamlFileLoader();
+        return $loader->getMetadatas([$file], $container);
     }
 
     /**
@@ -163,54 +145,14 @@ class FonctionnalMetadataTest extends TestCase
     public function testServiceBuilder(array $metadatas)
     {
         $container = new ContainerBuilder();
-        $container->register('abstractConverterId', \stdClass::class);
-        $container->register('abstractNormalizerId', \stdClass::class);
-        $container->register('abstractSerializerId', \stdClass::class);
-        $container->register('defaultSerializerId', \stdClass::class);
+        $container->register('abstract_api.serializer.property_name_converter', \stdClass::class);
+        $container->register('abstract_api.serializer.object.normalizer', \stdClass::class);
+        $container->register('abstract_api.serializer', \stdClass::class);
+        $container->register('api.serializer', \stdClass::class);
         $container->register('UserController', \stdClass::class);
 
-        $eventManagerFactory = new EventManagerFactory();
-
-        $controllerBuilder = new ControllerServiceBuilder(
-            new ServiceArgumentDecorator(
-                new ServiceValidator(
-                    $container
-                )
-            )
-        );
-        $eventBuilder = new EventServiceBuilder(
-            $eventManagerFactory->getListenerManager($container),
-            $eventManagerFactory->getSubscriberManager($container),
-            new ServiceArgumentDecorator(new ServiceValidator($container))
-        );
-
-        $definer = new DispatcherClassDefiner();
-        $dispatcherBuilder = new DispatcherServiceBuilder($definer, $eventBuilder);
-
-        $serializerBuilder = new SerializerServiceBuilder(
-            'abstractConverterId',
-            'abstractNormalizerId',
-            'abstractSerializerId',
-            'defaultSerializerId'
-        );
-        $formatterBuilder = new FormatterServiceBuilder($serializerBuilder);
-
-        $providerBuilder = new ProviderServiceBuilder();
-
-        $processBuilder = new ProcessServiceBuilder(
-            $formatterBuilder,
-            $providerBuilder,
-            $dispatcherBuilder,
-            $controllerBuilder
-        );
-
-        foreach ($metadatas as $metadata) {
-            $processBuilder->buildProcessServices(
-                $container,
-                $metadata,
-                new ProcessBuilderBag($metadata->getName())
-            );
-        }
+        $builder = new ServiceBuilder();
+        $builder->buildServices($metadatas, $container);
 
         $this->validateController($container);
         $this->validateDispatcher($container);
@@ -381,13 +323,17 @@ class FonctionnalMetadataTest extends TestCase
         $serializer = $container->getDefinition($serializerId);
 
         $this->assertInstanceOf(ChildDefinition::class, $serializer);
-        $this->assertEquals('abstractSerializerId', $serializer->getParent());
+        $this->assertEquals('abstract_api.serializer', $serializer->getParent());
 
         $arguments = $serializer->getArguments();
         $this->assertTrue(is_array($arguments));
         $this->assertCount(1, $arguments);
-        $this->assertInstanceOf(Reference::class, $arguments[array_keys($arguments)[0]]);
-        $this->assertEquals('user_serializer_normalizer', $arguments[array_keys($arguments)[0]]->__toString());
+
+        $normalizer = $arguments[array_keys($arguments)[0]];
+        $this->assertTrue(is_array($normalizer));
+        $this->assertCount(1, $normalizer);
+        $this->assertInstanceOf(Reference::class, $normalizer[0]);
+        $this->assertEquals('user_serializer_normalizer', $normalizer[0]->__toString());
 
         $this->validateConverter($container);
         $this->validateNormalizer($container);
@@ -410,7 +356,7 @@ class FonctionnalMetadataTest extends TestCase
         $converter = $container->getDefinition($converterId);
 
         $this->assertInstanceOf(ChildDefinition::class, $converter);
-        $this->assertEquals('abstractConverterId', $converter->getParent());
+        $this->assertEquals('abstract_api.serializer.property_name_converter', $converter->getParent());
 
         $arguments = $converter->getArguments();
         $this->assertTrue(is_array($arguments));
@@ -435,7 +381,7 @@ class FonctionnalMetadataTest extends TestCase
         $normelizer = $container->getDefinition($normelizerId);
 
         $this->assertInstanceOf(ChildDefinition::class, $normelizer);
-        $this->assertEquals('abstractNormalizerId', $normelizer->getParent());
+        $this->assertEquals('abstract_api.serializer.object.normalizer', $normelizer->getParent());
 
         $arguments = $normelizer->getArguments();
         $this->assertTrue(is_array($arguments));

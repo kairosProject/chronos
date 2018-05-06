@@ -164,10 +164,13 @@ class SerializerServiceBuilderTest extends AbstractTestClass
     public function serializerIsValid(ChildDefinition $definition)
     {
         $this->assertEquals('abstract_serializer_id', $definition->getParent());
-        $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
 
-        $reference = $definition->getArgument(0);
-        $this->assertEquals('name_serializer_normalizer', (string)$reference);
+        $normalizer = $definition->getArgument('$normalizers');
+        $this->assertTrue(is_array($normalizer));
+        $this->assertCount(1, $normalizer);
+        $this->assertInstanceOf(Reference::class, $normalizer[0]);
+        $this->assertEquals('name_serializer_normalizer', $normalizer[0]->__toString());
+
         return true;
     }
 

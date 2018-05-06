@@ -17,6 +17,9 @@ declare(strict_types=1);
 namespace Chronos\ServiceBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Chronos\ServiceBundle\DependencyInjection\CompilerPass\ServiceProcessPass;
 
 /**
  * Chronos service bundle
@@ -31,4 +34,19 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class ChronosServiceBundle extends Bundle
 {
+    /**
+     * Builds the bundle.
+     *
+     * It is only ever called once when the cache is empty.
+     *
+     * @param ContainerBuilder $container The application container
+     *
+     * @return void
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(
+            new ServiceProcessPass()
+        );
+    }
 }

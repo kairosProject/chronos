@@ -26,11 +26,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * This class is used to validate the ChronosApiExtension class
  *
- * @category Test
- * @package  Chronos
- * @author   matthieu vallance <matthieu.vallance@cscfa.fr>
- * @license  MIT <https://opensource.org/licenses/MIT>
- * @link     http://cscfa.fr
+ * @category                    Test
+ * @package                     Chronos
+ * @author                      matthieu vallance <matthieu.vallance@cscfa.fr>
+ * @license                     MIT <https://opensource.org/licenses/MIT>
+ * @link                        http://cscfa.fr
+ * @runTestsInSeparateProcesses
  */
 class ChronosApiExtensionTest extends AbstractTestClass
 {

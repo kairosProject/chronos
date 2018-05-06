@@ -23,6 +23,9 @@ use Monolog\Logger;
 use Chronos\ApiBundle\Provider\DocumentProviderInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Chronos\ApiBundle\Event\ControllerEventInterface;
+use Chronos\ApiBundle\Paginator\DocumentPaginatorInterface;
+use Doctrine\ODM\MongoDB\Query\Builder;
+use Doctrine\MongoDB\Query\Query;
 
 /**
  * Generic document provider test
@@ -58,7 +61,8 @@ class GenericDocumentProviderTest extends AbstractTestClass
         $this->assertConstructor(
             [
                 'same:repository' => $repository,
-                'same:logger' => $logger1
+                'same:logger' => $logger1,
+                'same:paginator' => $this->createMock(DocumentPaginatorInterface::class)
             ],
             [
                 'parameterKey' => DocumentProviderInterface::DATA_PROVIDED
@@ -75,6 +79,7 @@ class GenericDocumentProviderTest extends AbstractTestClass
             [
                 'same:repository' => $repository,
                 'same:logger' => $logger2,
+                'same:paginator' => $this->createMock(DocumentPaginatorInterface::class),
                 'parameterKey' => $parameterKey
             ]
         );
@@ -91,11 +96,15 @@ class GenericDocumentProviderTest extends AbstractTestClass
     {
         $logger = $this->createMock(Logger::class);
         $parameterKey = GenericDocumentProvider::DATA_PROVIDED;
+        $paginator = $this->createMock(DocumentPaginatorInterface::class);
+        $builder = $this->createMock(Builder::class);
+        $query = $this->createMock(Query::class);
         $data = [new \stdClass()];
+
         $repository = $this->createMock(DocumentRepository::class);
         $repository->expects($this->once())
-            ->method('findAll')
-            ->willReturn($data);
+            ->method('createQueryBuilder')
+            ->willReturn($builder);
 
         $parameters = $this->createMock(ParameterBag::class);
         $parameters->expects($this->once())
@@ -107,10 +116,27 @@ class GenericDocumentProviderTest extends AbstractTestClass
             ->method('getParameters')
             ->willReturn($parameters);
 
+        $this->getInvocationBuilder($paginator, $this->once(), 'paginate')
+            ->with(
+                $this->identicalTo($builder),
+                $this->identicalTo($event)
+            )->willReturn(
+                $builder
+            );
+
+        $this->getInvocationBuilder($builder, $this->once(), 'find')
+            ->willReturn($builder);
+        $this->getInvocationBuilder($builder, $this->once(), 'getQuery')
+            ->willReturn($query);
+
+        $this->getInvocationBuilder($query, $this->once(), 'execute')
+            ->willReturn($data);
+
         $instance = $this->getInstance();
         $this->getClassProperty('repository')->setValue($instance, $repository);
         $this->getClassProperty('logger')->setValue($instance, $logger);
         $this->getClassProperty('parameterKey')->setValue($instance, $parameterKey);
+        $this->getClassProperty('paginator')->setValue($instance, $paginator);
 
         $instance->provideDocuments($event);
     }
