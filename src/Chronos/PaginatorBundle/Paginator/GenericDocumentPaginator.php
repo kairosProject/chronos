@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Chronos\ApiBundle\Paginator;
+namespace Chronos\PaginatorBundle\Paginator;
 
 use Doctrine\MongoDB\Query\Builder;
 use Chronos\ApiBundle\Event\ControllerEventInterface;

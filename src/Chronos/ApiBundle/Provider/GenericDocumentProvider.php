@@ -20,7 +20,8 @@ use Doctrine\ODM\MongoDB\DocumentRepository;
 use Chronos\ApiBundle\Event\ControllerEventInterface;
 use Psr\Log\LoggerInterface;
 use Monolog\Logger;
-use Chronos\ApiBundle\Paginator\DocumentPaginatorInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Chronos\ApiBundle\Event\QueryBuildingEvent;
 
 /**
  * Generic document provider
@@ -35,6 +36,15 @@ use Chronos\ApiBundle\Paginator\DocumentPaginatorInterface;
  */
 class GenericDocumentProvider implements DocumentProviderInterface
 {
+    /**
+     * Event query building
+     *
+     * Define the query building event
+     *
+     * @var string
+     */
+    public const EVENT_QUERY_BUILDING = 'query_building';
+
     /**
      * Repository
      *
@@ -63,30 +73,19 @@ class GenericDocumentProvider implements DocumentProviderInterface
     private $logger;
 
     /**
-     * Paginator
-     *
-     * The query paginator
-     *
-     * @var DocumentPaginatorInterface
-     */
-    private $paginator;
-
-    /**
      * Construct
      *
      * The default GenericDocumentProvider
      *
-     * @param DocumentRepository         $repository   The document repository relative to the providing process
-     * @param LoggerInterface            $logger       The application logger
-     * @param DocumentPaginatorInterface $paginator    The query paginator
-     * @param string                     $parameterKey The key where insert the provided data into the event parameter
+     * @param DocumentRepository $repository   The document repository relative to the providing process
+     * @param LoggerInterface    $logger       The application logger
+     * @param string             $parameterKey The key where insert the provided data into the event parameter
      *
      * @return void
      */
     public function __construct(
         DocumentRepository $repository,
         LoggerInterface $logger,
-        DocumentPaginatorInterface $paginator,
         string $parameterKey = self::DATA_PROVIDED
     ) {
         if ($logger instanceof Logger) {
@@ -95,7 +94,6 @@ class GenericDocumentProvider implements DocumentProviderInterface
         $this->repository = $repository;
         $this->parameterKey = $parameterKey;
         $this->logger = $logger;
-        $this->paginator = $paginator;
     }
 
     /**
@@ -103,20 +101,30 @@ class GenericDocumentProvider implements DocumentProviderInterface
      *
      * Provide the documents relative to the providing process
      *
-     * @param ControllerEventInterface $event The current dispatched event
+     * @param ControllerEventInterface $event      The current dispatched event
+     * @param string                   $eventName  The current dispatched event
+     * @param EventDispatcherInterface $dispatcher The original dispatcher instance
      *
      * @return void
      */
     public function provideDocuments(
-        ControllerEventInterface $event
+        ControllerEventInterface $event,
+        string $eventName,
+        EventDispatcherInterface $dispatcher
     ) : void {
-        $data = $this->paginator
-            ->paginate(
-                $this->repository
-                    ->createQueryBuilder()
-                    ->find(),
-                $event
-            )->getQuery()
+        $queryBuilder = $this->repository
+            ->createQueryBuilder()
+            ->find();
+
+        $buildingEvent = new QueryBuildingEvent(
+            $event->getRequest(),
+            $queryBuilder,
+            $eventName
+        );
+        $dispatcher->dispatch(self::EVENT_QUERY_BUILDING, $buildingEvent);
+
+        $data = $buildingEvent->getQueryBuilder()
+            ->getQuery()
             ->execute();
 
         $this->logger->debug(

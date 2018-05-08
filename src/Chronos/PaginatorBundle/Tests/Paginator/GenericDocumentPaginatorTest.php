@@ -14,10 +14,10 @@ declare(strict_types=1);
  * @license  MIT <https://opensource.org/licenses/MIT>
  * @link     http://cscfa.fr
  */
-namespace Chronos\ApiBundle\Tests\Paginator;
+namespace Chronos\PaginatorBundle\Tests\Paginator;
 
 use Chronos\ApiBundle\Tests\AbstractTestClass;
-use Chronos\ApiBundle\Paginator\GenericDocumentPaginator;
+use Chronos\PaginatorBundle\Paginator\GenericDocumentPaginator;
 use Doctrine\MongoDB\Query\Builder;
 use Chronos\ApiBundle\Event\ControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -133,7 +133,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
     /**
      * Test construct
      *
-     * Validate the Chronos\ApiBundle\Paginator\GenericDocumentPaginator::__construct method
+     * Validate the Chronos\PaginatorBundle\Paginator\GenericDocumentPaginator::__construct method
      *
      * @param array $arguments The constructor given arguments
      * @param array $optionals The constructor optional arguments not provided
@@ -164,7 +164,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
     /**
      * Test paginate
      *
-     * Validate the Chronos\ApiBundle\Paginator\GenericDocumentPaginator::paginate method
+     * Validate the Chronos\PaginatorBundle\Paginator\GenericDocumentPaginator::paginate method
      *
      * @param int $perPageDefault The default page limit
      * @param int $pageDefault    The default page
@@ -223,7 +223,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
     /**
      * Test paginate limit error
      *
-     * Validate the Chronos\ApiBundle\Paginator\GenericDocumentPaginator::paginate method in case of invalid limit
+     * Validate the Chronos\PaginatorBundle\Paginator\GenericDocumentPaginator::paginate method in case of invalid limit
      *
      * @return void
      */
@@ -255,7 +255,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
     /**
      * Test paginate page error
      *
-     * Validate the Chronos\ApiBundle\Paginator\GenericDocumentPaginator::paginate method in case of invalid page
+     * Validate the Chronos\PaginatorBundle\Paginator\GenericDocumentPaginator::paginate method in case of invalid page
      *
      * @return void
      */

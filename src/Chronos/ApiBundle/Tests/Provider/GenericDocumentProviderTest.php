@@ -23,9 +23,12 @@ use Monolog\Logger;
 use Chronos\ApiBundle\Provider\DocumentProviderInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Chronos\ApiBundle\Event\ControllerEventInterface;
-use Chronos\ApiBundle\Paginator\DocumentPaginatorInterface;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\MongoDB\Query\Query;
+use Chronos\ApiBundle\Event\ApiControllerEventInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Chronos\ApiBundle\Event\QueryBuildingEventInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Generic document provider test
@@ -61,8 +64,7 @@ class GenericDocumentProviderTest extends AbstractTestClass
         $this->assertConstructor(
             [
                 'same:repository' => $repository,
-                'same:logger' => $logger1,
-                'same:paginator' => $this->createMock(DocumentPaginatorInterface::class)
+                'same:logger' => $logger1
             ],
             [
                 'parameterKey' => DocumentProviderInterface::DATA_PROVIDED
@@ -79,7 +81,6 @@ class GenericDocumentProviderTest extends AbstractTestClass
             [
                 'same:repository' => $repository,
                 'same:logger' => $logger2,
-                'same:paginator' => $this->createMock(DocumentPaginatorInterface::class),
                 'parameterKey' => $parameterKey
             ]
         );
@@ -96,10 +97,10 @@ class GenericDocumentProviderTest extends AbstractTestClass
     {
         $logger = $this->createMock(Logger::class);
         $parameterKey = GenericDocumentProvider::DATA_PROVIDED;
-        $paginator = $this->createMock(DocumentPaginatorInterface::class);
         $builder = $this->createMock(Builder::class);
         $query = $this->createMock(Query::class);
         $data = [new \stdClass()];
+        $request = $this->createMock(Request::class);
 
         $repository = $this->createMock(DocumentRepository::class);
         $repository->expects($this->once())
@@ -116,13 +117,9 @@ class GenericDocumentProviderTest extends AbstractTestClass
             ->method('getParameters')
             ->willReturn($parameters);
 
-        $this->getInvocationBuilder($paginator, $this->once(), 'paginate')
-            ->with(
-                $this->identicalTo($builder),
-                $this->identicalTo($event)
-            )->willReturn(
-                $builder
-            );
+        $event->expects($this->once())
+            ->method('getRequest')
+            ->willReturn($request);
 
         $this->getInvocationBuilder($builder, $this->once(), 'find')
             ->willReturn($builder);
@@ -136,9 +133,25 @@ class GenericDocumentProviderTest extends AbstractTestClass
         $this->getClassProperty('repository')->setValue($instance, $repository);
         $this->getClassProperty('logger')->setValue($instance, $logger);
         $this->getClassProperty('parameterKey')->setValue($instance, $parameterKey);
-        $this->getClassProperty('paginator')->setValue($instance, $paginator);
 
-        $instance->provideDocuments($event);
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->getInvocationBuilder($dispatcher, $this->once(), 'dispatch')
+            ->with(
+                $this->equalTo(GenericDocumentProvider::EVENT_QUERY_BUILDING),
+                $this->callback(
+                    function (QueryBuildingEventInterface $event) use ($request) {
+                        $this->assertSame($request, $event->getRequest());
+                        $this->assertEquals(
+                            ApiControllerEventInterface::EVENT_GET_MULTIPLE,
+                            $event->getOriginalEvent()
+                        );
+                        $this->assertInstanceOf(Builder::class, $event->getQueryBuilder());
+                        return true;
+                    }
+                )
+            );
+
+        $instance->provideDocuments($event, ApiControllerEventInterface::EVENT_GET_MULTIPLE, $dispatcher);
     }
 
     /**
