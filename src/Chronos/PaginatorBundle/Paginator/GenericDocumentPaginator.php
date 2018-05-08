@@ -16,8 +16,7 @@ declare(strict_types=1);
  */
 namespace Chronos\PaginatorBundle\Paginator;
 
-use Doctrine\MongoDB\Query\Builder;
-use Chronos\ApiBundle\Event\ControllerEventInterface;
+use Chronos\ApiBundle\Event\QueryBuildingEventInterface;
 
 /**
  * Generic document paginator
@@ -121,12 +120,11 @@ class GenericDocumentPaginator implements DocumentPaginatorInterface
      *
      * Apply the pagination to the current query
      *
-     * @param Builder                  $builder The current query builder
-     * @param ControllerEventInterface $event   The current request event
+     * @param QueryBuildingEventInterface $event The current building event
      *
-     * @return Builder
+     * @return void
      */
-    public function paginate(Builder $builder, ControllerEventInterface $event) : Builder
+    public function paginate(QueryBuildingEventInterface $event) : void
     {
         if ($this->enabled) {
             $request = $event->getRequest();
@@ -154,10 +152,9 @@ class GenericDocumentPaginator implements DocumentPaginatorInterface
                 );
             }
 
-            $builder->limit($limit)
+            $event->getQueryBuilder()
+                ->limit($limit)
                 ->skip((--$page) * $limit);
         }
-
-        return $builder;
     }
 }

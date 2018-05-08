@@ -21,6 +21,7 @@ use Chronos\PaginatorBundle\Paginator\GenericDocumentPaginator;
 use Doctrine\MongoDB\Query\Builder;
 use Chronos\ApiBundle\Event\ControllerEventInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Chronos\ApiBundle\Event\QueryBuildingEventInterface;
 
 /**
  * Generic document paginator test
@@ -185,7 +186,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
         int $skip
     ) {
         $builder = $this->createMock(Builder::class);
-        $event = $this->createMock(ControllerEventInterface::class);
+        $event = $this->createMock(QueryBuildingEventInterface::class);
         $request = $this->createMock(Request::class);
 
         $this->getInvocationBuilder($request, $this->exactly(2), 'get')
@@ -203,21 +204,24 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
                 $page
             );
 
-            $this->getInvocationBuilder($event, $this->once(), 'getRequest')
-                ->willReturn($request);
+        $this->getInvocationBuilder($event, $this->once(), 'getRequest')
+            ->willReturn($request);
 
-            $this->getInvocationBuilder($builder, $this->once(), 'limit')
+        $this->getInvocationBuilder($event, $this->once(), 'getQueryBuilder')
+            ->willReturn($builder);
+
+        $this->getInvocationBuilder($builder, $this->once(), 'limit')
                 ->with($this->equalTo($limit))
                 ->willReturn($builder);
-            $this->getInvocationBuilder($builder, $this->once(), 'skip')
+        $this->getInvocationBuilder($builder, $this->once(), 'skip')
                 ->with($this->equalTo($skip))
                 ->willReturn($builder);
 
-            $instance = $this->getInstance();
-            $this->getClassProperty('enabled')->setValue($instance, true);
-            $this->getClassProperty('defaultLimit')->setValue($instance, $perPageDefault);
-            $this->getClassProperty('defaultPage')->setValue($instance, $pageDefault);
-            $this->assertSame($builder, $instance->paginate($builder, $event));
+        $instance = $this->getInstance();
+        $this->getClassProperty('enabled')->setValue($instance, true);
+        $this->getClassProperty('defaultLimit')->setValue($instance, $perPageDefault);
+        $this->getClassProperty('defaultPage')->setValue($instance, $pageDefault);
+        $instance->paginate($event);
     }
 
     /**
@@ -229,8 +233,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
      */
     public function testPaginationLimitError()
     {
-        $builder = $this->createMock(Builder::class);
-        $event = $this->createMock(ControllerEventInterface::class);
+        $event = $this->createMock(QueryBuildingEventInterface::class);
         $request = $this->createMock(Request::class);
 
         $this->getInvocationBuilder($request, $this->once(), 'get')
@@ -249,7 +252,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('perPage cannot be upper than 100. 150 given');
-        $instance->paginate($builder, $event);
+        $instance->paginate($event);
     }
 
     /**
@@ -261,8 +264,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
      */
     public function testPaginationPageError()
     {
-        $builder = $this->createMock(Builder::class);
-        $event = $this->createMock(ControllerEventInterface::class);
+        $event = $this->createMock(QueryBuildingEventInterface::class);
         $request = $this->createMock(Request::class);
 
         $this->getInvocationBuilder($request, $this->exactly(2), 'get')
@@ -288,7 +290,7 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('page cannot be lower than 1. 0 given');
-        $instance->paginate($builder, $event);
+        $instance->paginate($event);
     }
 
     /**
