@@ -211,11 +211,11 @@ class GenericDocumentPaginatorTest extends AbstractTestClass
             ->willReturn($builder);
 
         $this->getInvocationBuilder($builder, $this->once(), 'limit')
-                ->with($this->equalTo($limit))
-                ->willReturn($builder);
+            ->with($this->equalTo($limit))
+            ->willReturn($builder);
         $this->getInvocationBuilder($builder, $this->once(), 'skip')
-                ->with($this->equalTo($skip))
-                ->willReturn($builder);
+            ->with($this->equalTo($skip))
+            ->willReturn($builder);
 
         $instance = $this->getInstance();
         $this->getClassProperty('enabled')->setValue($instance, true);
